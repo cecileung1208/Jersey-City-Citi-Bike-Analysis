@@ -405,12 +405,13 @@
       <column aggregation='Avg' caption='Start Station Latitude' datatype='real' name='[start station latitude]' role='measure' semantic-role='[Geographical].[Latitude]' type='quantitative' />
       <column aggregation='Avg' caption='Start Station Longitude' datatype='real' name='[start station longitude]' role='measure' semantic-role='[Geographical].[Longitude]' type='quantitative' />
       <column caption='Start Station Name' datatype='string' name='[start station name]' role='dimension' type='nominal' />
-      <column caption='Starttime' datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
+      <column datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
       <column caption='Stoptime' datatype='datetime' name='[stoptime]' role='dimension' type='ordinal' />
       <column caption='Tripduration' datatype='integer' name='[tripduration]' role='measure' type='quantitative' />
       <column caption='Usertype' datatype='string' name='[usertype]' role='dimension' type='nominal' />
       <column-instance column='[Calculation_1381197726900985858]' derivation='Count' name='[cnt:Calculation_1381197726900985858:qk]' pivot='key' type='quantitative' />
       <column-instance column='[Calculation_463307827520397315]' derivation='Count' name='[cnt:Calculation_463307827520397315:qk]' pivot='key' type='quantitative' />
+      <column-instance column='[gender]' derivation='Count' name='[cnt:gender:qk]' pivot='key' type='quantitative' />
       <column-instance column='[starttime]' derivation='Count' name='[cnt:starttime:qk]' pivot='key' type='quantitative' />
       <column-instance column='[usertype]' derivation='Count' name='[cnt:usertype:qk]' pivot='key' type='quantitative' />
       <column-instance column='[starttime]' derivation='Day' name='[dy:starttime:ok]' pivot='key' type='ordinal' />
@@ -421,8 +422,22 @@
           <alias key='true' value='Summer' />
         </aliases>
       </column-instance>
+      <column-instance column='[Weekday]' derivation='InOut' name='[io:Weekday:nk]' pivot='key' type='nominal'>
+        <aliases>
+          <alias key='false' value='Weekends' />
+          <alias key='true' value='Weekdays' />
+        </aliases>
+      </column-instance>
+      <column-instance column='[Calculation_463307827520397315]' derivation='Max' name='[max:Calculation_463307827520397315:qk]' pivot='key' type='quantitative' />
       <column-instance column='[starttime]' derivation='Month' name='[mn:starttime:ok]' pivot='key' type='ordinal' />
       <column-instance column='[usertype]' derivation='None' name='[none:usertype:nk]' pivot='key' type='nominal' />
+      <column-instance column='[gender]' derivation='Sum' name='[pcto:sum:gender:qk:1]' pivot='key' type='quantitative'>
+        <table-calc ordering-type='Field' type='PctTotal'>
+          <order field='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' />
+          <order field='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' />
+          <order field='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' />
+        </table-calc>
+      </column-instance>
       <column-instance column='[Calculation_463307827520397315]' derivation='Sum' name='[sum:Calculation_463307827520397315:qk]' pivot='key' type='quantitative' />
       <column-instance column='[starttime]' derivation='Weekday' name='[wd:starttime:ok]' pivot='key' type='ordinal' />
       <column-instance column='[starttime]' derivation='Year' name='[yr:starttime:ok]' pivot='key' type='ordinal' />
@@ -453,20 +468,24 @@
           <groupfilter function='level-members' level='[usertype]' />
         </groupfilter>
       </group>
-      <group caption='Action (YEAR(Starttime),Usertype)' hidden='true' name='[Action (YEAR(Starttime),Usertype)]' name-style='unqualified' user:auto-column='sheet_link'>
+      <group caption='Action (Age,YEAR(Starttime),Usertype)' hidden='true' name='[Action (Age,YEAR(Starttime),Usertype)]' name-style='unqualified' user:auto-column='sheet_link'>
         <groupfilter function='crossjoin'>
+          <groupfilter function='level-members' level='[Age  (group)]' />
           <groupfilter function='level-members' level='[yr:starttime:ok]' />
           <groupfilter function='level-members' level='[usertype]' />
         </groupfilter>
       </group>
-      <group caption='Fall Winter Months' name='[Fall Winter Months]' name-style='unqualified' user:ui-builder='filter-group'>
-        <groupfilter function='union' user:ui-domain='database' user:ui-enumeration='inclusive' user:ui-marker='enumerate'>
-          <groupfilter function='member' level='[mn:starttime:ok]' member='1' />
-          <groupfilter function='member' level='[mn:starttime:ok]' member='2' />
-          <groupfilter function='member' level='[mn:starttime:ok]' member='3' />
-          <groupfilter function='member' level='[mn:starttime:ok]' member='10' />
-          <groupfilter function='member' level='[mn:starttime:ok]' member='11' />
-          <groupfilter function='member' level='[mn:starttime:ok]' member='12' />
+      <group caption='Action (Age,YEAR(starttime),Usertype)' hidden='true' name='[Action (Age,YEAR(starttime),Usertype)]' name-style='unqualified' user:auto-column='sheet_link'>
+        <groupfilter function='crossjoin'>
+          <groupfilter function='level-members' level='[Age  (group)]' />
+          <groupfilter function='level-members' level='[yr:starttime:ok]' />
+          <groupfilter function='level-members' level='[usertype]' />
+        </groupfilter>
+      </group>
+      <group caption='Action (YEAR(Starttime),Usertype)' hidden='true' name='[Action (YEAR(Starttime),Usertype)]' name-style='unqualified' user:auto-column='sheet_link'>
+        <groupfilter function='crossjoin'>
+          <groupfilter function='level-members' level='[yr:starttime:ok]' />
+          <groupfilter function='level-members' level='[usertype]' />
         </groupfilter>
       </group>
       <group caption='Spring Summer Months' name='[Spring Summer Months]' name-style='unqualified' user:ui-builder='filter-group'>
@@ -478,6 +497,9 @@
           <groupfilter function='member' level='[mn:starttime:ok]' member='8' />
           <groupfilter function='member' level='[mn:starttime:ok]' member='9' />
         </groupfilter>
+      </group>
+      <group caption='Weekday' name='[Weekday]' name-style='unqualified' user:ui-builder='filter-group'>
+        <groupfilter from='2' function='range' level='[wd:starttime:ok]' to='6' user:ui-domain='database' user:ui-enumeration='inclusive' user:ui-marker='enumerate' />
       </group>
       <_.fcp.SchemaViewerObjectModel.false...folder name='Age' role='dimensions'>
         <folder-item name='[Age  (group)]' type='field' />
@@ -796,14 +818,23 @@
             <map to='#76b7b2'>
               <bucket>&quot;[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:starttime:qk]&quot;</bucket>
             </map>
+            <map to='#b07aa1'>
+              <bucket>&quot;[federated.01lounl0yor8it11i24eh18vb1m8].[pcto:sum:gender:qk:1]&quot;</bucket>
+            </map>
             <map to='#e15759'>
               <bucket>&quot;[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_463307827520397315:qk]&quot;</bucket>
+            </map>
+            <map to='#e15759'>
+              <bucket>&quot;[federated.01lounl0yor8it11i24eh18vb1m8].[max:Calculation_463307827520397315:qk]&quot;</bucket>
             </map>
             <map to='#edc948'>
               <bucket>&quot;[federated.01lounl0yor8it11i24eh18vb1m8].[sum:Calculation_463307827520397315:qk]&quot;</bucket>
             </map>
             <map to='#f28e2b'>
               <bucket>&quot;[federated.01lounl0yor8it11i24eh18vb1m8]&quot;</bucket>
+            </map>
+            <map to='#ff9da7'>
+              <bucket>&quot;[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:gender:qk]&quot;</bucket>
             </map>
           </encoding>
           <encoding attr='color' field='[none:usertype:nk]' type='palette'>
@@ -851,89 +882,6 @@
             </map>
             <map to='#b3e0a6'>
               <bucket>&quot;20-&quot;</bucket>
-            </map>
-          </encoding>
-          <encoding attr='color' field='[hr:starttime:ok]' type='palette'>
-            <map to='#305d8a'>
-              <bucket>2020</bucket>
-            </map>
-            <map to='#499894'>
-              <bucket>9</bucket>
-            </map>
-            <map to='#4e79a7'>
-              <bucket>1</bucket>
-            </map>
-            <map to='#4e79a7'>
-              <bucket>20</bucket>
-            </map>
-            <map to='#59a14f'>
-              <bucket>5</bucket>
-            </map>
-            <map to='#5b8cb8'>
-              <bucket>2019</bucket>
-            </map>
-            <map to='#79706e'>
-              <bucket>0</bucket>
-            </map>
-            <map to='#86bcb6'>
-              <bucket>10</bucket>
-            </map>
-            <map to='#8cd17d'>
-              <bucket>6</bucket>
-            </map>
-            <map to='#9d7660'>
-              <bucket>18</bucket>
-            </map>
-            <map to='#a0cbe8'>
-              <bucket>2</bucket>
-            </map>
-            <map to='#a0cbe8'>
-              <bucket>21</bucket>
-            </map>
-            <map to='#b07aa1'>
-              <bucket>16</bucket>
-            </map>
-            <map to='#b6992d'>
-              <bucket>7</bucket>
-            </map>
-            <map to='#b9ddf1'>
-              <bucket>2018</bucket>
-            </map>
-            <map to='#bab0ac'>
-              <bucket>13</bucket>
-            </map>
-            <map to='#d37295'>
-              <bucket>14</bucket>
-            </map>
-            <map to='#d4a6c8'>
-              <bucket>17</bucket>
-            </map>
-            <map to='#d7b5a6'>
-              <bucket>19</bucket>
-            </map>
-            <map to='#e15759'>
-              <bucket>11</bucket>
-            </map>
-            <map to='#f1ce63'>
-              <bucket>8</bucket>
-            </map>
-            <map to='#f28e2b'>
-              <bucket>3</bucket>
-            </map>
-            <map to='#f28e2b'>
-              <bucket>22</bucket>
-            </map>
-            <map to='#fabfd2'>
-              <bucket>15</bucket>
-            </map>
-            <map to='#ff9d9a'>
-              <bucket>12</bucket>
-            </map>
-            <map to='#ffbe7d'>
-              <bucket>4</bucket>
-            </map>
-            <map to='#ffbe7d'>
-              <bucket>23</bucket>
             </map>
           </encoding>
           <encoding attr='color' field='[dy:starttime:ok]' type='palette'>
@@ -1072,6 +1020,97 @@
               <bucket>2</bucket>
             </map>
           </encoding>
+          <encoding attr='color' field='[hr:starttime:ok]' type='palette'>
+            <map to='#305d8a'>
+              <bucket>2020</bucket>
+            </map>
+            <map to='#499894'>
+              <bucket>9</bucket>
+            </map>
+            <map to='#4e79a7'>
+              <bucket>1</bucket>
+            </map>
+            <map to='#4e79a7'>
+              <bucket>20</bucket>
+            </map>
+            <map to='#59a14f'>
+              <bucket>5</bucket>
+            </map>
+            <map to='#5b8cb8'>
+              <bucket>2019</bucket>
+            </map>
+            <map to='#79706e'>
+              <bucket>0</bucket>
+            </map>
+            <map to='#86bcb6'>
+              <bucket>10</bucket>
+            </map>
+            <map to='#8cd17d'>
+              <bucket>6</bucket>
+            </map>
+            <map to='#9d7660'>
+              <bucket>18</bucket>
+            </map>
+            <map to='#a0cbe8'>
+              <bucket>2</bucket>
+            </map>
+            <map to='#a0cbe8'>
+              <bucket>21</bucket>
+            </map>
+            <map to='#b07aa1'>
+              <bucket>16</bucket>
+            </map>
+            <map to='#b6992d'>
+              <bucket>7</bucket>
+            </map>
+            <map to='#b9ddf1'>
+              <bucket>2018</bucket>
+            </map>
+            <map to='#bab0ac'>
+              <bucket>13</bucket>
+            </map>
+            <map to='#d37295'>
+              <bucket>14</bucket>
+            </map>
+            <map to='#d4a6c8'>
+              <bucket>17</bucket>
+            </map>
+            <map to='#d7b5a6'>
+              <bucket>19</bucket>
+            </map>
+            <map to='#e15759'>
+              <bucket>11</bucket>
+            </map>
+            <map to='#f1ce63'>
+              <bucket>8</bucket>
+            </map>
+            <map to='#f28e2b'>
+              <bucket>3</bucket>
+            </map>
+            <map to='#f28e2b'>
+              <bucket>22</bucket>
+            </map>
+            <map to='#fabfd2'>
+              <bucket>15</bucket>
+            </map>
+            <map to='#ff9d9a'>
+              <bucket>12</bucket>
+            </map>
+            <map to='#ffbe7d'>
+              <bucket>4</bucket>
+            </map>
+            <map to='#ffbe7d'>
+              <bucket>23</bucket>
+            </map>
+          </encoding>
+          <encoding attr='color' field='[io:Weekday:nk]' type='palette'>
+            <map to='#b71d3e'>
+              <bucket>true</bucket>
+            </map>
+            <map to='#f6bc58'>
+              <bucket>false</bucket>
+            </map>
+          </encoding>
         </style-rule>
       </style>
       <semantic-values>
@@ -1109,53 +1148,139 @@
         </objects>
       </_.fcp.ObjectModelEncapsulateLegacy.true...object-graph>
     </datasource>
-    <datasource inline='true' name='Clipboard_20210301T172457' version='18.1'>
+    <datasource inline='true' name='Clipboard_20210301T221817' version='18.1'>
       <connection class='federated'>
         <named-connections>
-          <named-connection caption='Clipboard_20210301T172457' name='Clipboard_20210301T172457leaf'>
-            <connection class='textscan' directory='Data/0qdlcuf1fsp9ad1e4iq5f0pb6jvt' filename='Clipboard_20210301T172457.txt' temporary='yes' />
+          <named-connection caption='Clipboard_20210301T221817' name='Clipboard_20210301T221817leaf'>
+            <connection class='textscan' directory='Data/116nrtw1v7b6821cllitn0f5zzh5' filename='Clipboard_20210301T221817.txt' temporary='yes' />
           </named-connection>
         </named-connections>
-        <_.fcp.ObjectModelEncapsulateLegacy.false...relation connection='Clipboard_20210301T172457leaf' name='Clipboard_20210301T172457#txt' table='[Clipboard_20210301T172457#txt]' type='table' />
-        <_.fcp.ObjectModelEncapsulateLegacy.true...relation connection='Clipboard_20210301T172457leaf' name='Clipboard_20210301T172457#txt' table='[Clipboard_20210301T172457#txt]' type='table' />
+        <_.fcp.ObjectModelEncapsulateLegacy.false...relation connection='Clipboard_20210301T221817leaf' name='Clipboard_20210301T221817#txt' table='[Clipboard_20210301T221817#txt]' type='table'>
+          <columns character-set='UTF-8' header='yes' locale='en_US' separator='&#9;'>
+            <column datatype='string' name='Age' ordinal='0' />
+            <column datatype='string' name='Month of Starttime' ordinal='1' />
+            <column datatype='string' name='Usertype' ordinal='2' />
+            <column datatype='integer' name='Count of Age ' ordinal='3' />
+            <column datatype='integer' name='Count of Starttime' ordinal='4' />
+          </columns>
+        </_.fcp.ObjectModelEncapsulateLegacy.false...relation>
+        <_.fcp.ObjectModelEncapsulateLegacy.true...relation connection='Clipboard_20210301T221817leaf' name='Clipboard_20210301T221817#txt' table='[Clipboard_20210301T221817#txt]' type='table'>
+          <columns character-set='UTF-8' header='yes' locale='en_US' separator='&#9;'>
+            <column datatype='string' name='Age' ordinal='0' />
+            <column datatype='string' name='Month of Starttime' ordinal='1' />
+            <column datatype='string' name='Usertype' ordinal='2' />
+            <column datatype='integer' name='Count of Age ' ordinal='3' />
+            <column datatype='integer' name='Count of Starttime' ordinal='4' />
+          </columns>
+        </_.fcp.ObjectModelEncapsulateLegacy.true...relation>
+        <metadata-records>
+          <metadata-record class='capability'>
+            <remote-name />
+            <remote-type>0</remote-type>
+            <parent-name>[Clipboard_20210301T221817#txt]</parent-name>
+            <remote-alias />
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='character-set'>&quot;UTF-8&quot;</attribute>
+              <attribute datatype='string' name='collation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='field-delimiter'>&quot;\\t&quot;</attribute>
+              <attribute datatype='string' name='header-row'>&quot;true&quot;</attribute>
+              <attribute datatype='string' name='locale'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='single-char'>&quot;&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Age</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[Age]</local-name>
+            <parent-name>[Clipboard_20210301T221817#txt]</parent-name>
+            <remote-alias>Age</remote-alias>
+            <ordinal>0</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[Clipboard_20210301T221817]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Month of Starttime</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[Month of Starttime]</local-name>
+            <parent-name>[Clipboard_20210301T221817#txt]</parent-name>
+            <remote-alias>Month of Starttime</remote-alias>
+            <ordinal>1</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[Clipboard_20210301T221817]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Usertype</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[Usertype]</local-name>
+            <parent-name>[Clipboard_20210301T221817#txt]</parent-name>
+            <remote-alias>Usertype</remote-alias>
+            <ordinal>2</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[Clipboard_20210301T221817]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Count of Age </remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Count of Age ]</local-name>
+            <parent-name>[Clipboard_20210301T221817#txt]</parent-name>
+            <remote-alias>Count of Age </remote-alias>
+            <ordinal>3</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[Clipboard_20210301T221817]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Count of Starttime</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Count of Starttime]</local-name>
+            <parent-name>[Clipboard_20210301T221817#txt]</parent-name>
+            <remote-alias>Count of Starttime</remote-alias>
+            <ordinal>4</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[Clipboard_20210301T221817]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+        </metadata-records>
       </connection>
       <aliases enabled='yes' />
-      <_.fcp.ObjectModelTableType.true...column caption='Clipboard_20210301T172457' datatype='table' name='[__tableau_internal_object_id__].[Clipboard_20210301T172457]' role='measure' type='quantitative' />
+      <column caption='Count of Age' datatype='integer' name='[Count of Age ]' role='measure' type='quantitative' />
+      <_.fcp.ObjectModelTableType.true...column caption='Clipboard_20210301T221817' datatype='table' name='[__tableau_internal_object_id__].[Clipboard_20210301T221817]' role='measure' type='quantitative' />
       <layout _.fcp.SchemaViewerObjectModel.false...dim-percentage='0.5' _.fcp.SchemaViewerObjectModel.false...measure-percentage='0.4' dim-ordering='alphabetic' measure-ordering='alphabetic' show-structure='true' />
       <semantic-values>
         <semantic-value key='[Country].[Name]' value='&quot;Canada&quot;' />
       </semantic-values>
       <_.fcp.ObjectModelEncapsulateLegacy.true...object-graph>
         <objects>
-          <object caption='Clipboard_20210301T172457' id='Clipboard_20210301T172457'>
+          <object caption='Clipboard_20210301T221817' id='Clipboard_20210301T221817'>
             <properties context=''>
-              <relation connection='Clipboard_20210301T172457leaf' name='Clipboard_20210301T172457#txt' table='[Clipboard_20210301T172457#txt]' type='table' />
-            </properties>
-          </object>
-        </objects>
-      </_.fcp.ObjectModelEncapsulateLegacy.true...object-graph>
-    </datasource>
-    <datasource inline='true' name='Clipboard_20210301T181942' version='18.1'>
-      <connection class='federated'>
-        <named-connections>
-          <named-connection caption='Clipboard_20210301T181942' name='Clipboard_20210301T181942leaf'>
-            <connection class='textscan' directory='Data/0n1j7kk0ubfm4y1cyvdhq0qlc1z9' filename='Clipboard_20210301T181942.txt' temporary='yes' />
-          </named-connection>
-        </named-connections>
-        <_.fcp.ObjectModelEncapsulateLegacy.false...relation connection='Clipboard_20210301T181942leaf' name='Clipboard_20210301T181942#txt' table='[Clipboard_20210301T181942#txt]' type='table' />
-        <_.fcp.ObjectModelEncapsulateLegacy.true...relation connection='Clipboard_20210301T181942leaf' name='Clipboard_20210301T181942#txt' table='[Clipboard_20210301T181942#txt]' type='table' />
-      </connection>
-      <aliases enabled='yes' />
-      <_.fcp.ObjectModelTableType.true...column caption='Clipboard_20210301T181942' datatype='table' name='[__tableau_internal_object_id__].[Clipboard_20210301T181942]' role='measure' type='quantitative' />
-      <layout _.fcp.SchemaViewerObjectModel.false...dim-percentage='0.5' _.fcp.SchemaViewerObjectModel.false...measure-percentage='0.4' dim-ordering='alphabetic' measure-ordering='alphabetic' show-structure='true' />
-      <semantic-values>
-        <semantic-value key='[Country].[Name]' value='&quot;Canada&quot;' />
-      </semantic-values>
-      <_.fcp.ObjectModelEncapsulateLegacy.true...object-graph>
-        <objects>
-          <object caption='Clipboard_20210301T181942' id='Clipboard_20210301T181942'>
-            <properties context=''>
-              <relation connection='Clipboard_20210301T181942leaf' name='Clipboard_20210301T181942#txt' table='[Clipboard_20210301T181942#txt]' type='table' />
+              <relation connection='Clipboard_20210301T221817leaf' name='Clipboard_20210301T221817#txt' table='[Clipboard_20210301T221817#txt]' type='table'>
+                <columns character-set='UTF-8' header='yes' locale='en_US' separator='&#9;'>
+                  <column datatype='string' name='Age' ordinal='0' />
+                  <column datatype='string' name='Month of Starttime' ordinal='1' />
+                  <column datatype='string' name='Usertype' ordinal='2' />
+                  <column datatype='integer' name='Count of Age ' ordinal='3' />
+                  <column datatype='integer' name='Count of Starttime' ordinal='4' />
+                </columns>
+              </relation>
             </properties>
           </object>
         </objects>
@@ -1165,35 +1290,6 @@
   <mapsources>
     <mapsource name='Tableau' />
   </mapsources>
-  <shared-views>
-    <shared-view name='federated.01lounl0yor8it11i24eh18vb1m8'>
-      <datasources>
-        <datasource caption='citibike_JC_2018_to_2020' name='federated.01lounl0yor8it11i24eh18vb1m8' />
-      </datasources>
-      <datasource-dependencies datasource='federated.01lounl0yor8it11i24eh18vb1m8'>
-        <column caption='Gender ' datatype='string' name='[Gender (group)]' role='dimension' type='nominal'>
-          <calculation class='categorical-bin' column='[gender]' new-bin='true'>
-            <bin default-name='false' value='&quot;Female&quot;'>
-              <value>2</value>
-            </bin>
-            <bin default-name='false' value='&quot;Male&quot;'>
-              <value>1</value>
-            </bin>
-          </calculation>
-        </column>
-        <column caption='Gender' datatype='integer' name='[gender]' role='measure' type='quantitative' />
-        <column caption='Starttime' datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
-        <column-instance column='[starttime]' derivation='Year' name='[yr:starttime:ok]' pivot='key' type='ordinal' />
-      </datasource-dependencies>
-      <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]'>
-        <groupfilter function='level-members' level='[Gender (group)]' user:ui-enumeration='all' user:ui-marker='enumerate' />
-      </filter>
-      <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]'>
-        <groupfilter function='level-members' level='[yr:starttime:ok]' user:ui-enumeration='all' user:ui-marker='enumerate' />
-        <target field='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' />
-      </filter>
-    </shared-view>
-  </shared-views>
   <actions>
     <action caption='Filter 1 (generated)' name='[Action1]'>
       <activation auto-clear='true' type='on-select' />
@@ -1211,21 +1307,14 @@
         <param name='target' value='Age &amp; Gender' />
       </command>
     </action>
-    <action caption='Filter 3 (generated)' name='[Action3]'>
-      <activation auto-clear='true' type='on-select' />
-      <source dashboard='Age &amp; Gender' type='sheet' worksheet='Gender &amp; Age' />
-      <command command='tsc:tsl-filter'>
-        <param name='special-fields' value='all' />
-        <param name='target' value='Age &amp; Gender' />
-      </command>
-    </action>
   </actions>
   <worksheets>
     <worksheet name='Age Group (UserType)'>
       <layout-options>
         <title>
           <formatted-text>
-            <run bold='true' fontsize='10'>Age</run>
+            <run>Æ&#10;</run>
+            <run bold='true' fontsize='9'>Age</run>
           </formatted-text>
         </title>
       </layout-options>
@@ -1319,38 +1408,33 @@
             <column caption='Age ' datatype='integer' name='[Calculation_463307827520397315]' role='measure' type='quantitative'>
               <calculation class='tableau' formula='Year(today())-[birth year]' />
             </column>
-            <column caption='Gender ' datatype='string' name='[Gender (group)]' role='dimension' type='nominal'>
-              <calculation class='categorical-bin' column='[gender]' new-bin='true'>
-                <bin default-name='false' value='&quot;Female&quot;'>
-                  <value>2</value>
-                </bin>
-                <bin default-name='false' value='&quot;Male&quot;'>
-                  <value>1</value>
-                </bin>
-              </calculation>
-            </column>
             <column caption='Birth Year' datatype='integer' name='[birth year]' role='dimension' type='quantitative' />
             <column-instance column='[Calculation_463307827520397315]' derivation='Count' name='[cnt:Calculation_463307827520397315:qk]' pivot='key' type='quantitative' />
-            <column caption='Gender' datatype='integer' name='[gender]' role='measure' type='quantitative' />
             <column-instance column='[usertype]' derivation='None' name='[none:usertype:nk]' pivot='key' type='nominal' />
-            <column caption='Starttime' datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
+            <column datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
             <column caption='Usertype' datatype='string' name='[usertype]' role='dimension' type='nominal' />
             <column-instance column='[starttime]' derivation='Year' name='[yr:starttime:ok]' pivot='key' type='ordinal' />
           </datasource-dependencies>
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' filter-group='6'>
+            <groupfilter function='level-members' level='[none:usertype:nk]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' filter-group='5'>
+            <groupfilter function='level-members' level='[yr:starttime:ok]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
           <slices>
+            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]</column>
             <column>[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]</column>
-            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]</column>
           </slices>
           <aggregation value='true' />
         </view>
         <style>
           <style-rule element='cell'>
-            <format attr='height' value='150' />
+            <format attr='height' value='113' />
             <format attr='font-weight' value='bold' />
             <format attr='font-size' value='9' />
           </style-rule>
           <style-rule element='header'>
-            <format attr='height' field='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' value='17' />
+            <format attr='height' field='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' value='10' />
           </style-rule>
           <style-rule element='label'>
             <format attr='font-weight' field='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' value='bold' />
@@ -1364,6 +1448,24 @@
           <style-rule element='title'>
             <format attr='background-color' value='#ffffff' />
           </style-rule>
+          <style-rule element='legend'>
+            <format attr='font-size' value='6' />
+          </style-rule>
+          <style-rule element='legend-title-text'>
+            <format attr='color' field='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' value='' />
+          </style-rule>
+          <style-rule element='quick-filter'>
+            <format attr='title' field='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' value='Year of starttime'>
+              <formatted-text>
+                <run fontsize='8'>Year of starttime</run>
+              </formatted-text>
+            </format>
+            <format attr='title' field='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' value='Usertype'>
+              <formatted-text>
+                <run fontsize='8'>Usertype</run>
+              </formatted-text>
+            </format>
+          </style-rule>
         </style>
         <panes>
           <pane selection-relaxation-option='selection-relaxation-allow'>
@@ -1374,19 +1476,34 @@
             <encodings>
               <color column='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' />
               <size column='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_463307827520397315:qk]' />
+              <text column='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_463307827520397315:qk]' />
+              <text column='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' />
               <lod column='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_463307827520397315:qk]' />
             </encodings>
+            <customized-label>
+              <formatted-text>
+                <run>&lt;</run>
+                <run>[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]</run>
+                <run>&gt;&#10;&lt;</run>
+                <run>[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_463307827520397315:qk]</run>
+                <run>&gt;&#10;</run>
+              </formatted-text>
+            </customized-label>
             <style>
+              <style-rule element='datalabel'>
+                <format attr='color-mode' value='user' />
+                <format attr='color' value='#ffffff' />
+              </style-rule>
               <style-rule element='mark'>
-                <format attr='mark-labels-cull' value='true' />
                 <format attr='mark-labels-line-first' value='true' />
                 <format attr='mark-labels-line-last' value='true' />
                 <format attr='mark-labels-range-min' value='true' />
                 <format attr='mark-labels-range-max' value='true' />
-                <format attr='mark-labels-mode' value='all' />
                 <format attr='mark-labels-range-scope' value='pane' />
                 <format attr='mark-labels-range-field' value='' />
-                <format attr='mark-labels-show' value='false' />
+                <format attr='mark-labels-cull' value='false' />
+                <format attr='mark-labels-mode' value='selection' />
+                <format attr='mark-labels-show' value='true' />
               </style-rule>
               <style-rule element='pane'>
                 <format attr='minheight' value='-1' />
@@ -1404,7 +1521,7 @@
       <layout-options>
         <title>
           <formatted-text>
-            <run bold='true' fontsize='10'>How do the demographic group make use of Citibike?</run>
+            <run bold='true' fontsize='9'>Trips and Duration</run>
           </formatted-text>
         </title>
       </layout-options>
@@ -1515,19 +1632,33 @@
             <column-instance column='[Calculation_1381197726900985858]' derivation='Count' name='[cnt:Calculation_1381197726900985858:qk]' pivot='key' type='quantitative' />
             <column caption='Gender' datatype='integer' name='[gender]' role='measure' type='quantitative' />
             <column-instance column='[usertype]' derivation='None' name='[none:usertype:nk]' pivot='key' type='nominal' />
-            <column caption='Starttime' datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
+            <column datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
             <column caption='Tripduration' datatype='integer' name='[tripduration]' role='measure' type='quantitative' />
             <column caption='Usertype' datatype='string' name='[usertype]' role='dimension' type='nominal' />
             <column-instance column='[starttime]' derivation='Year' name='[yr:starttime:ok]' pivot='key' type='ordinal' />
           </datasource-dependencies>
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' filter-group='8'>
+            <groupfilter function='level-members' level='[Age  (group)]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' filter-group='3'>
+            <groupfilter function='level-members' level='[Gender (group)]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
           <natural-sort column='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' direction='DESC' />
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' filter-group='7'>
+            <groupfilter function='level-members' level='[none:usertype:nk]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
           <natural-sort column='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' direction='DESC' />
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' filter-group='4'>
+            <groupfilter function='level-members' level='[yr:starttime:ok]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
           <_.fcp.SingleValuePerNestSorting.true...single-value-per-nest-shelf-sorts>
             <single-value-per-nest-shelf-sort dimension-to-sort='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' direction='ASC' is-on-innermost-dimension='true' measure-to-sort-by='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' shelf='rows' />
           </_.fcp.SingleValuePerNestSorting.true...single-value-per-nest-shelf-sorts>
           <slices>
-            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]</column>
             <column>[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]</column>
+            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]</column>
+            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]</column>
+            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]</column>
           </slices>
           <aggregation value='true' />
         </view>
@@ -1545,6 +1676,7 @@
             <format attr='height' field='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' value='10' />
             <format attr='width' field='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' value='68' />
             <format attr='font-weight' data-class='subtotal' field='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' value='bold' />
+            <format attr='height' field='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' value='21' />
           </style-rule>
           <style-rule element='field-labels'>
             <format attr='color' value='#000000' />
@@ -1569,6 +1701,13 @@
             <encoding attr='color' field='[federated.01lounl0yor8it11i24eh18vb1m8].[avg:Calculation_1381197726900985858:qk]' palette='green_gold_10_0' type='interpolated' />
             <encoding attr='color' field='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_1381197726900985858:qk]' palette='green_gold_10_0' type='interpolated' />
           </style-rule>
+          <style-rule element='quick-filter'>
+            <format attr='title' field='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' value='Age'>
+              <formatted-text>
+                <run fontsize='8'>Age</run>
+              </formatted-text>
+            </format>
+          </style-rule>
         </style>
         <panes>
           <pane selection-relaxation-option='selection-relaxation-allow'>
@@ -1578,8 +1717,8 @@
             <mark class='Automatic' />
             <style>
               <style-rule element='pane'>
-                <format attr='minwidth' value='93' />
-                <format attr='maxwidth' value='93' />
+                <format attr='minwidth' value='113' />
+                <format attr='maxwidth' value='113' />
                 <format attr='minheight' value='120' />
                 <format attr='maxheight' value='120' />
                 <format attr='aspect' value='0' />
@@ -1635,7 +1774,7 @@
       <layout-options>
         <title>
           <formatted-text>
-            <run bold='true' fontsize='10'>Which is the most popular demographic group?</run>
+            <run bold='true' fontsize='9'>Male</run>
             <run>Æ&#10;</run>
           </formatted-text>
         </title>
@@ -1743,16 +1882,22 @@
             <column-instance column='[Calculation_463307827520397315]' derivation='Count' name='[cnt:Calculation_463307827520397315:qk]' pivot='key' type='quantitative' />
             <column caption='Gender' datatype='integer' name='[gender]' role='measure' type='quantitative' />
             <column-instance column='[usertype]' derivation='None' name='[none:usertype:nk]' pivot='key' type='nominal' />
-            <column caption='Starttime' datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
+            <column datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
+            <column-instance column='[Calculation_463307827520397315]' derivation='Sum' name='[sum:Calculation_463307827520397315:qk]' pivot='key' type='quantitative' />
             <column caption='Usertype' datatype='string' name='[usertype]' role='dimension' type='nominal' />
             <column-instance column='[starttime]' derivation='Year' name='[yr:starttime:ok]' pivot='key' type='ordinal' />
           </datasource-dependencies>
           <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[Action (Age,Gender ,Usertype)]'>
-            <groupfilter function='crossjoin' user:ui-action-filter='[Action2]' user:ui-enumeration='all' user:ui-marker='enumerate'>
-              <groupfilter function='level-members' level='[Age  (group)]' />
-              <groupfilter function='level-members' level='[Gender (group)]' />
-              <groupfilter function='level-members' level='[usertype]' />
+            <groupfilter expression='[Gender (group)] == &quot;Male&quot;' function='filter' user:ui-filter-by-field='true' user:ui-marker='filter-by'>
+              <groupfilter function='crossjoin' user:ui-enumeration='all' user:ui-marker='enumerate'>
+                <groupfilter function='level-members' level='[Age  (group)]' />
+                <groupfilter function='level-members' level='[Gender (group)]' />
+                <groupfilter function='level-members' level='[usertype]' />
+              </groupfilter>
             </groupfilter>
+          </filter>
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' filter-group='8'>
+            <groupfilter function='level-members' level='[Age  (group)]' user:ui-enumeration='all' user:ui-marker='enumerate' />
           </filter>
           <manual-sort column='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' direction='ASC'>
             <dictionary>
@@ -1765,6 +1910,9 @@
               <bucket>%all%</bucket>
             </dictionary>
           </manual-sort>
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' filter-group='3'>
+            <groupfilter function='level-members' level='[Gender (group)]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
           <manual-sort column='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' direction='ASC'>
             <dictionary>
               <bucket>&quot;Male&quot;</bucket>
@@ -1772,17 +1920,26 @@
               <bucket>%all%</bucket>
             </dictionary>
           </manual-sort>
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' filter-group='7'>
+            <groupfilter function='level-members' level='[none:usertype:nk]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
           <alphabetic-sort column='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' direction='DESC' />
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' filter-group='4'>
+            <groupfilter function='level-members' level='[yr:starttime:ok]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
           <slices>
             <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Action (Age,Gender ,Usertype)]</column>
-            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]</column>
             <column>[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]</column>
+            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]</column>
+            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]</column>
+            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]</column>
           </slices>
           <aggregation value='true' />
         </view>
         <style>
           <style-rule element='cell'>
-            <format attr='height' value='295' />
+            <format attr='height' value='275' />
+            <format attr='width' field='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' value='112' />
           </style-rule>
           <style-rule element='label'>
             <format attr='font-size' field='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' value='8' />
@@ -1790,6 +1947,9 @@
           </style-rule>
           <style-rule element='mark'>
             <encoding attr='color' field='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_463307827520397315:qk]' palette='red_10_0' type='interpolated' />
+          </style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='cols' value='false' />
           </style-rule>
         </style>
         <panes>
@@ -1799,10 +1959,9 @@
             </view>
             <mark class='Automatic' />
             <encodings>
-              <color column='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' />
+              <color column='[federated.01lounl0yor8it11i24eh18vb1m8].[sum:Calculation_463307827520397315:qk]' />
               <size column='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_463307827520397315:qk]' />
               <text column='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' />
-              <text column='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_463307827520397315:qk]' />
               <lod column='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_463307827520397315:qk]' />
               <lod column='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' />
             </encodings>
@@ -1810,7 +1969,6 @@
               <formatted-text>
                 <run bold='true' fontsize='8'><![CDATA[<[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]>]]></run>
                 <run>Æ&#10;</run>
-                <run fontsize='7'><![CDATA[<[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_463307827520397315:qk]>]]></run>
               </formatted-text>
             </customized-label>
             <style>
@@ -1828,20 +1986,269 @@
               <style-rule element='pane'>
                 <format attr='minheight' value='-1' />
                 <format attr='maxheight' value='-1' />
+                <format attr='minwidth' value='-1' />
+                <format attr='maxwidth' value='-1' />
               </style-rule>
             </style>
           </pane>
         </panes>
         <rows />
-        <cols>([federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk] / [federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)])</cols>
+        <cols>[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]</cols>
       </table>
       <simple-id uuid='{E1F9E16E-E7D8-4593-8EEE-79E83D2A144F}' />
+    </worksheet>
+    <worksheet name='Gender &amp; Age (2)'>
+      <layout-options>
+        <title>
+          <formatted-text>
+            <run bold='true' fontsize='9'>Female</run>
+            <run>Æ&#10;</run>
+          </formatted-text>
+        </title>
+      </layout-options>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='citibike_JC_2018_to_2020' name='federated.01lounl0yor8it11i24eh18vb1m8' />
+          </datasources>
+          <datasource-dependencies datasource='federated.01lounl0yor8it11i24eh18vb1m8'>
+            <column caption='Age' datatype='string' name='[Age  (group)]' role='dimension' type='nominal'>
+              <calculation class='categorical-bin' column='[Calculation_463307827520397315]' new-bin='true'>
+                <bin default-name='false' value='&quot;20-&quot;'>
+                  <value>17</value>
+                  <value>18</value>
+                  <value>19</value>
+                </bin>
+                <bin default-name='false' value='&quot;20s&quot;'>
+                  <value>20</value>
+                  <value>21</value>
+                  <value>22</value>
+                  <value>23</value>
+                  <value>24</value>
+                  <value>25</value>
+                  <value>26</value>
+                  <value>27</value>
+                  <value>28</value>
+                  <value>29</value>
+                </bin>
+                <bin default-name='false' value='&quot;30s&quot;'>
+                  <value>30</value>
+                  <value>31</value>
+                  <value>32</value>
+                  <value>33</value>
+                  <value>34</value>
+                  <value>35</value>
+                  <value>36</value>
+                  <value>37</value>
+                  <value>38</value>
+                  <value>39</value>
+                </bin>
+                <bin default-name='false' value='&quot;40s&quot;'>
+                  <value>40</value>
+                  <value>41</value>
+                  <value>42</value>
+                  <value>43</value>
+                  <value>44</value>
+                  <value>45</value>
+                  <value>46</value>
+                  <value>47</value>
+                  <value>48</value>
+                  <value>49</value>
+                </bin>
+                <bin default-name='false' value='&quot;50s&quot;'>
+                  <value>50</value>
+                  <value>51</value>
+                  <value>52</value>
+                  <value>53</value>
+                  <value>54</value>
+                  <value>55</value>
+                  <value>56</value>
+                  <value>57</value>
+                  <value>58</value>
+                  <value>59</value>
+                </bin>
+                <bin default-name='false' value='&quot;60+&quot;'>
+                  <value>60</value>
+                  <value>61</value>
+                  <value>62</value>
+                  <value>63</value>
+                  <value>64</value>
+                  <value>65</value>
+                  <value>66</value>
+                  <value>67</value>
+                  <value>68</value>
+                  <value>69</value>
+                  <value>70</value>
+                  <value>71</value>
+                  <value>72</value>
+                  <value>73</value>
+                  <value>74</value>
+                  <value>75</value>
+                  <value>76</value>
+                  <value>77</value>
+                  <value>78</value>
+                  <value>79</value>
+                  <value>80</value>
+                </bin>
+              </calculation>
+            </column>
+            <column caption='Age ' datatype='integer' name='[Calculation_463307827520397315]' role='measure' type='quantitative'>
+              <calculation class='tableau' formula='Year(today())-[birth year]' />
+            </column>
+            <column caption='Gender ' datatype='string' name='[Gender (group)]' role='dimension' type='nominal'>
+              <calculation class='categorical-bin' column='[gender]' new-bin='true'>
+                <bin default-name='false' value='&quot;Female&quot;'>
+                  <value>2</value>
+                </bin>
+                <bin default-name='false' value='&quot;Male&quot;'>
+                  <value>1</value>
+                </bin>
+              </calculation>
+            </column>
+            <column caption='Birth Year' datatype='integer' name='[birth year]' role='dimension' type='quantitative' />
+            <column-instance column='[Calculation_463307827520397315]' derivation='Count' name='[cnt:Calculation_463307827520397315:qk]' pivot='key' type='quantitative' />
+            <column caption='Gender' datatype='integer' name='[gender]' role='measure' type='quantitative' />
+            <column-instance column='[usertype]' derivation='None' name='[none:usertype:nk]' pivot='key' type='nominal' />
+            <column datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
+            <column caption='Usertype' datatype='string' name='[usertype]' role='dimension' type='nominal' />
+            <column-instance column='[starttime]' derivation='Year' name='[yr:starttime:ok]' pivot='key' type='ordinal' />
+          </datasource-dependencies>
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[Action (Age,Gender ,Usertype)]'>
+            <groupfilter expression='[Gender (group)] == &quot;Female&quot;' function='filter' user:ui-filter-by-field='true' user:ui-marker='filter-by'>
+              <groupfilter function='crossjoin' user:ui-enumeration='all' user:ui-marker='enumerate'>
+                <groupfilter function='level-members' level='[Age  (group)]' />
+                <groupfilter function='level-members' level='[Gender (group)]' />
+                <groupfilter function='level-members' level='[usertype]' />
+              </groupfilter>
+            </groupfilter>
+          </filter>
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' filter-group='8'>
+            <groupfilter function='level-members' level='[Age  (group)]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <manual-sort column='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' direction='ASC'>
+            <dictionary>
+              <bucket>&quot;30s&quot;</bucket>
+              <bucket>&quot;40s&quot;</bucket>
+              <bucket>&quot;20s&quot;</bucket>
+              <bucket>&quot;50s&quot;</bucket>
+              <bucket>&quot;60+&quot;</bucket>
+              <bucket>&quot;20-&quot;</bucket>
+              <bucket>%all%</bucket>
+            </dictionary>
+          </manual-sort>
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' filter-group='3'>
+            <groupfilter function='level-members' level='[Gender (group)]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <manual-sort column='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' direction='ASC'>
+            <dictionary>
+              <bucket>&quot;Male&quot;</bucket>
+              <bucket>&quot;Female&quot;</bucket>
+              <bucket>%all%</bucket>
+            </dictionary>
+          </manual-sort>
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' filter-group='7'>
+            <groupfilter function='level-members' level='[none:usertype:nk]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <alphabetic-sort column='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' direction='DESC' />
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' filter-group='4'>
+            <groupfilter function='level-members' level='[yr:starttime:ok]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <slices>
+            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Action (Age,Gender ,Usertype)]</column>
+            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]</column>
+            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]</column>
+            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]</column>
+            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='cell'>
+            <format attr='height' value='273' />
+            <format attr='width' field='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' value='115' />
+          </style-rule>
+          <style-rule element='header'>
+            <format attr='height' field='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' value='10' />
+            <format attr='height' field='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' value='10' />
+          </style-rule>
+          <style-rule element='label'>
+            <format attr='font-size' field='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' value='8' />
+            <format attr='font-weight' field='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' value='bold' />
+          </style-rule>
+          <style-rule element='mark'>
+            <encoding attr='color' field='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_463307827520397315:qk]' palette='red_10_0' type='interpolated' />
+          </style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='cols' value='false' />
+          </style-rule>
+          <style-rule element='quick-filter'>
+            <format attr='title' field='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' value='Year'>
+              <formatted-text>
+                <run fontsize='8'>Year</run>
+              </formatted-text>
+            </format>
+            <format attr='title' field='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' value='Usertype'>
+              <formatted-text>
+                <run fontsize='8'>Usertype</run>
+              </formatted-text>
+            </format>
+            <format attr='title' field='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' value='Gender '>
+              <formatted-text>
+                <run fontsize='8'>Gender </run>
+              </formatted-text>
+            </format>
+          </style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='on' />
+            </view>
+            <mark class='Automatic' />
+            <encodings>
+              <color column='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_463307827520397315:qk]' />
+              <size column='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_463307827520397315:qk]' />
+              <text column='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' />
+              <lod column='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_463307827520397315:qk]' />
+              <lod column='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' />
+            </encodings>
+            <customized-label>
+              <formatted-text>
+                <run bold='true' fontsize='8'><![CDATA[<[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]>]]></run>
+                <run>Æ&#10;</run>
+              </formatted-text>
+            </customized-label>
+            <style>
+              <style-rule element='mark'>
+                <format attr='mark-labels-show' value='true' />
+                <format attr='mark-labels-cull' value='true' />
+                <format attr='mark-labels-line-first' value='true' />
+                <format attr='mark-labels-line-last' value='true' />
+                <format attr='mark-labels-range-min' value='true' />
+                <format attr='mark-labels-range-max' value='true' />
+                <format attr='mark-labels-mode' value='all' />
+                <format attr='mark-labels-range-scope' value='pane' />
+                <format attr='mark-labels-range-field' value='' />
+              </style-rule>
+              <style-rule element='pane'>
+                <format attr='minheight' value='-1' />
+                <format attr='maxheight' value='-1' />
+                <format attr='minwidth' value='-1' />
+                <format attr='maxwidth' value='-1' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows />
+        <cols>[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]</cols>
+      </table>
+      <simple-id uuid='{0B2C6018-7113-4672-9C14-9E801EF4AE4D}' />
     </worksheet>
     <worksheet name='Gender (User Type)'>
       <layout-options>
         <title>
           <formatted-text>
-            <run bold='true' fontsize='10'>Gender</run>
+            <run bold='true' fontsize='9'>Gender</run>
           </formatted-text>
         </title>
       </layout-options>
@@ -1949,10 +2356,14 @@
             <column-instance column='[gender]' derivation='Count' name='[cnt:gender:qk]' pivot='key' type='quantitative' />
             <column caption='Gender' datatype='integer' name='[gender]' role='measure' type='quantitative' />
             <column-instance column='[usertype]' derivation='None' name='[none:usertype:nk]' pivot='key' type='nominal' />
-            <column-instance column='[gender]' derivation='Sum' name='[pcto:sum:gender:qk]' pivot='key' type='quantitative'>
-              <table-calc ordering-type='Rows' type='PctTotal' />
+            <column-instance column='[gender]' derivation='Sum' name='[pcto:sum:gender:qk:1]' pivot='key' type='quantitative'>
+              <table-calc ordering-type='Field' type='PctTotal'>
+                <order field='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' />
+                <order field='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' />
+                <order field='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' />
+              </table-calc>
             </column-instance>
-            <column caption='Starttime' datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
+            <column datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
             <column caption='Usertype' datatype='string' name='[usertype]' role='dimension' type='nominal' />
             <column-instance column='[starttime]' derivation='Year' name='[yr:starttime:ok]' pivot='key' type='ordinal' />
           </datasource-dependencies>
@@ -1963,10 +2374,40 @@
               <groupfilter function='level-members' level='[usertype]' />
             </groupfilter>
           </filter>
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[Action (Age,YEAR(Starttime),Usertype)]'>
+            <groupfilter function='crossjoin' user:ui-action-filter='[Action1]' user:ui-enumeration='all' user:ui-marker='enumerate'>
+              <groupfilter function='level-members' level='[Age  (group)]' />
+              <groupfilter function='level-members' level='[yr:starttime:ok]' />
+              <groupfilter function='level-members' level='[usertype]' />
+            </groupfilter>
+          </filter>
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[Action (Age,YEAR(starttime),Usertype)]'>
+            <groupfilter function='crossjoin' user:ui-action-filter='[Action1]' user:ui-enumeration='all' user:ui-marker='enumerate'>
+              <groupfilter function='level-members' level='[Age  (group)]' />
+              <groupfilter function='level-members' level='[yr:starttime:ok]' />
+              <groupfilter function='level-members' level='[usertype]' />
+            </groupfilter>
+          </filter>
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]'>
+            <groupfilter function='union' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate'>
+              <groupfilter function='member' level='[Gender (group)]' member='&quot;Female&quot;' />
+              <groupfilter function='member' level='[Gender (group)]' member='&quot;Male&quot;' />
+            </groupfilter>
+          </filter>
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' filter-group='6'>
+            <groupfilter function='level-members' level='[none:usertype:nk]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <natural-sort column='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' direction='DESC' />
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' filter-group='5'>
+            <groupfilter function='level-members' level='[yr:starttime:ok]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
           <slices>
             <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Action (Age  (group),YEAR(Starttime),Usertype)]</column>
+            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Action (Age,YEAR(Starttime),Usertype)]</column>
             <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]</column>
             <column>[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]</column>
+            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]</column>
+            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Action (Age,YEAR(starttime),Usertype)]</column>
           </slices>
           <aggregation value='true' />
         </view>
@@ -1975,33 +2416,31 @@
             <format attr='font-size' data-class='subtotal' value='8' />
             <format attr='font-weight' data-class='subtotal' value='normal' />
           </style-rule>
-          <style-rule element='header'>
-            <format attr='height' field='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' value='21' />
-          </style-rule>
           <style-rule element='label'>
             <format attr='font-size' field='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' value='7' />
             <format attr='font-size' field='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' value='7' />
             <format attr='font-weight' field='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' value='bold' />
           </style-rule>
-          <style-rule element='mark'>
-            <encoding attr='size-bar' field='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:gender:qk]' field-type='quantitative' max-size='1' min-size='0.005' type='centersize' />
-          </style-rule>
           <style-rule element='worksheet'>
             <format attr='display-field-labels' scope='cols' value='false' />
             <format attr='font-size' value='5' />
+            <format attr='display-field-labels' scope='rows' value='false' />
+          </style-rule>
+          <style-rule element='legend-title-text'>
+            <format attr='color' field='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' value=''>
+              <formatted-text />
+            </format>
           </style-rule>
         </style>
         <panes>
-          <pane selection-relaxation-option='selection-relaxation-allow'>
+          <pane id='5' selection-relaxation-option='selection-relaxation-allow'>
             <view>
               <breakdown value='auto' />
             </view>
-            <mark class='Pie' />
+            <mark class='Bar' />
             <encodings>
               <color column='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' />
-              <wedge-size column='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:gender:qk]' />
-              <text column='[federated.01lounl0yor8it11i24eh18vb1m8].[pcto:sum:gender:qk]' />
-              <lod column='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' />
+              <text column='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:gender:qk]' />
             </encodings>
             <style>
               <style-rule element='mark'>
@@ -2011,8 +2450,8 @@
             </style>
           </pane>
         </panes>
-        <rows />
-        <cols>([federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok] / [federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk])</cols>
+        <rows>[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]</rows>
+        <cols>([federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok] * [federated.01lounl0yor8it11i24eh18vb1m8].[pcto:sum:gender:qk:1])</cols>
       </table>
       <simple-id uuid='{D5B95045-18AE-433E-BE21-15CBF3412355}' />
     </worksheet>
@@ -2033,31 +2472,15 @@
             <mapsource name='Tableau' />
           </mapsources>
           <datasource-dependencies datasource='federated.01lounl0yor8it11i24eh18vb1m8'>
-            <column caption='Gender ' datatype='string' name='[Gender (group)]' role='dimension' type='nominal'>
-              <calculation class='categorical-bin' column='[gender]' new-bin='true'>
-                <bin default-name='false' value='&quot;Female&quot;'>
-                  <value>2</value>
-                </bin>
-                <bin default-name='false' value='&quot;Male&quot;'>
-                  <value>1</value>
-                </bin>
-              </calculation>
-            </column>
             <column-instance column='[starttime]' derivation='Count' name='[cnt:starttime:qk]' pivot='key' type='quantitative' />
-            <column caption='Gender' datatype='integer' name='[gender]' role='measure' type='quantitative' />
             <column-instance column='[starttime]' derivation='Month' name='[mn:starttime:ok]' pivot='key' type='ordinal' />
             <column-instance column='[start station latitude]' derivation='None' name='[none:start station latitude:qk]' pivot='key' type='quantitative' />
             <column-instance column='[start station longitude]' derivation='None' name='[none:start station longitude:qk]' pivot='key' type='quantitative' />
             <column aggregation='Avg' caption='Start Station Latitude' datatype='real' name='[start station latitude]' role='measure' semantic-role='[Geographical].[Latitude]' type='quantitative' />
             <column aggregation='Avg' caption='Start Station Longitude' datatype='real' name='[start station longitude]' role='measure' semantic-role='[Geographical].[Longitude]' type='quantitative' />
-            <column caption='Starttime' datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
+            <column datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
             <column-instance column='[starttime]' derivation='Year-Trunc' name='[tyr:starttime:ok]' pivot='key' type='ordinal' />
-            <column-instance column='[starttime]' derivation='Year' name='[yr:starttime:ok]' pivot='key' type='ordinal' />
           </datasource-dependencies>
-          <slices>
-            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]</column>
-            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]</column>
-          </slices>
           <aggregation value='true' />
         </view>
         <style>
@@ -2242,11 +2665,110 @@
       </table>
       <simple-id uuid='{F64A7FF5-39D8-4793-A46C-516D644D15DD}' />
     </worksheet>
+    <worksheet name='Sheet 12'>
+      <layout-options>
+        <title>
+          <formatted-text>
+            <run bold='true' fontsize='9'>Hourly Trips during the Week</run>
+            <run>Æ&#10;&#10;</run>
+          </formatted-text>
+        </title>
+      </layout-options>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='citibike_JC_2018_to_2020' name='federated.01lounl0yor8it11i24eh18vb1m8' />
+          </datasources>
+          <datasource-dependencies datasource='federated.01lounl0yor8it11i24eh18vb1m8'>
+            <column caption='Gender ' datatype='string' name='[Gender (group)]' role='dimension' type='nominal'>
+              <calculation class='categorical-bin' column='[gender]' new-bin='true'>
+                <bin default-name='false' value='&quot;Female&quot;'>
+                  <value>2</value>
+                </bin>
+                <bin default-name='false' value='&quot;Male&quot;'>
+                  <value>1</value>
+                </bin>
+              </calculation>
+            </column>
+            <column-instance column='[starttime]' derivation='Count' name='[cnt:starttime:qk]' pivot='key' type='quantitative' />
+            <column caption='Gender' datatype='integer' name='[gender]' role='measure' type='quantitative' />
+            <column-instance column='[starttime]' derivation='Hour' name='[hr:starttime:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[Weekday]' derivation='InOut' name='[io:Weekday:nk]' pivot='key' type='nominal'>
+              <aliases>
+                <alias key='false' value='Weekends' />
+                <alias key='true' value='Weekdays' />
+              </aliases>
+            </column-instance>
+            <column datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
+            <column-instance column='[starttime]' derivation='Weekday' name='[wd:starttime:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[starttime]' derivation='Weekday' name='[wd:starttime:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[starttime]' derivation='Year' name='[yr:starttime:ok]' pivot='key' type='ordinal' />
+          </datasource-dependencies>
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' filter-group='10'>
+            <groupfilter function='level-members' level='[Gender (group)]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <manual-sort column='[federated.01lounl0yor8it11i24eh18vb1m8].[io:Weekday:nk]' direction='ASC'>
+            <dictionary>
+              <bucket>true</bucket>
+              <bucket>false</bucket>
+            </dictionary>
+          </manual-sort>
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' filter-group='9'>
+            <groupfilter function='level-members' level='[yr:starttime:ok]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <slices>
+            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]</column>
+            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='axis'>
+            <format attr='title' class='0' field='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:starttime:qk]' scope='rows' value='# of Trips' />
+          </style-rule>
+          <style-rule element='header'>
+            <format attr='height-header' value='18' />
+          </style-rule>
+          <style-rule element='label'>
+            <format attr='text-format' field='[federated.01lounl0yor8it11i24eh18vb1m8].[hr:starttime:ok]' value='ih a' />
+            <format attr='text-orientation' field='[federated.01lounl0yor8it11i24eh18vb1m8].[hr:starttime:ok]' value='-90' />
+          </style-rule>
+          <style-rule element='mark'>
+            <encoding attr='color' field='[federated.01lounl0yor8it11i24eh18vb1m8].[wd:starttime:qk]' palette='sunrise_sunset_diverging_10_0' type='interpolated' />
+          </style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='cols' value='false' />
+          </style-rule>
+          <style-rule element='legend'>
+            <format attr='font-size' value='6' />
+          </style-rule>
+          <style-rule element='legend-title-text'>
+            <format attr='color' field='[federated.01lounl0yor8it11i24eh18vb1m8].[io:Weekday:nk]' value=''>
+              <formatted-text />
+            </format>
+          </style-rule>
+        </style>
+        <panes>
+          <pane id='2' selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+            <encodings>
+              <color column='[federated.01lounl0yor8it11i24eh18vb1m8].[io:Weekday:nk]' />
+            </encodings>
+          </pane>
+        </panes>
+        <rows>[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:starttime:qk]</rows>
+        <cols>[federated.01lounl0yor8it11i24eh18vb1m8].[hr:starttime:ok]</cols>
+      </table>
+      <simple-id uuid='{852C61A4-825E-4E81-A7AB-0AA71022FCFC}' />
+    </worksheet>
     <worksheet name='Trips (User Types)'>
       <layout-options>
         <title>
           <formatted-text>
-            <run bold='true' fontsize='10'>Trips</run>
+            <run bold='true' fontsize='9'>Trips</run>
           </formatted-text>
         </title>
       </layout-options>
@@ -2340,22 +2862,11 @@
             <column caption='Age ' datatype='integer' name='[Calculation_463307827520397315]' role='measure' type='quantitative'>
               <calculation class='tableau' formula='Year(today())-[birth year]' />
             </column>
-            <column caption='Gender ' datatype='string' name='[Gender (group)]' role='dimension' type='nominal'>
-              <calculation class='categorical-bin' column='[gender]' new-bin='true'>
-                <bin default-name='false' value='&quot;Female&quot;'>
-                  <value>2</value>
-                </bin>
-                <bin default-name='false' value='&quot;Male&quot;'>
-                  <value>1</value>
-                </bin>
-              </calculation>
-            </column>
             <column caption='Birth Year' datatype='integer' name='[birth year]' role='dimension' type='quantitative' />
             <column-instance column='[starttime]' derivation='Count' name='[cnt:starttime:qk]' pivot='key' type='quantitative' />
             <column-instance column='[usertype]' derivation='Count' name='[cnt:usertype:qk]' pivot='key' type='quantitative' />
-            <column caption='Gender' datatype='integer' name='[gender]' role='measure' type='quantitative' />
             <column-instance column='[usertype]' derivation='None' name='[none:usertype:nk]' pivot='key' type='nominal' />
-            <column caption='Starttime' datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
+            <column datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
             <column caption='Usertype' datatype='string' name='[usertype]' role='dimension' type='nominal' />
             <column-instance column='[starttime]' derivation='Year' name='[yr:starttime:ok]' pivot='key' type='ordinal' />
           </datasource-dependencies>
@@ -2366,10 +2877,32 @@
               <groupfilter function='level-members' level='[usertype]' />
             </groupfilter>
           </filter>
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[Action (Age,YEAR(Starttime),Usertype)]'>
+            <groupfilter function='crossjoin' user:ui-action-filter='[Action1]' user:ui-enumeration='all' user:ui-marker='enumerate'>
+              <groupfilter function='level-members' level='[Age  (group)]' />
+              <groupfilter function='level-members' level='[yr:starttime:ok]' />
+              <groupfilter function='level-members' level='[usertype]' />
+            </groupfilter>
+          </filter>
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[Action (Age,YEAR(starttime),Usertype)]'>
+            <groupfilter function='crossjoin' user:ui-action-filter='[Action1]' user:ui-enumeration='all' user:ui-marker='enumerate'>
+              <groupfilter function='level-members' level='[Age  (group)]' />
+              <groupfilter function='level-members' level='[yr:starttime:ok]' />
+              <groupfilter function='level-members' level='[usertype]' />
+            </groupfilter>
+          </filter>
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' filter-group='6'>
+            <groupfilter function='level-members' level='[none:usertype:nk]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' filter-group='5'>
+            <groupfilter function='level-members' level='[yr:starttime:ok]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
           <slices>
             <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Action (Age  (group),YEAR(Starttime),Usertype)]</column>
-            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]</column>
+            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Action (Age,YEAR(Starttime),Usertype)]</column>
             <column>[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]</column>
+            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]</column>
+            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Action (Age,YEAR(starttime),Usertype)]</column>
           </slices>
           <aggregation value='true' />
         </view>
@@ -2423,26 +2956,11 @@
             <datasource caption='citibike_JC_2018_to_2020' name='federated.01lounl0yor8it11i24eh18vb1m8' />
           </datasources>
           <datasource-dependencies datasource='federated.01lounl0yor8it11i24eh18vb1m8'>
-            <column caption='Gender ' datatype='string' name='[Gender (group)]' role='dimension' type='nominal'>
-              <calculation class='categorical-bin' column='[gender]' new-bin='true'>
-                <bin default-name='false' value='&quot;Female&quot;'>
-                  <value>2</value>
-                </bin>
-                <bin default-name='false' value='&quot;Male&quot;'>
-                  <value>1</value>
-                </bin>
-              </calculation>
-            </column>
             <column-instance column='[starttime]' derivation='Count' name='[cnt:starttime:qk]' pivot='key' type='quantitative' />
-            <column caption='Gender' datatype='integer' name='[gender]' role='measure' type='quantitative' />
             <column-instance column='[starttime]' derivation='Month' name='[mn:starttime:ok]' pivot='key' type='ordinal' />
-            <column caption='Starttime' datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
+            <column datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
             <column-instance column='[starttime]' derivation='Year' name='[yr:starttime:ok]' pivot='key' type='ordinal' />
           </datasource-dependencies>
-          <slices>
-            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]</column>
-            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]</column>
-          </slices>
           <aggregation value='true' />
         </view>
         <style>
@@ -2450,7 +2968,7 @@
             <format attr='width' field='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' value='55' />
           </style-rule>
           <style-rule element='mark'>
-            <encoding attr='color' field='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:starttime:qk]' palette='red_blue_diverging_10_0' reverse='true' type='interpolated' />
+            <encoding attr='color' field='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:starttime:qk]' palette='red_blue_diverging_10_0' type='interpolated' />
           </style-rule>
         </style>
         <panes>
@@ -2477,160 +2995,15 @@
       </table>
       <simple-id uuid='{F3C159B5-3E61-4DCC-BEC8-21CFB610FE3A}' />
     </worksheet>
-    <worksheet name='Trips by Hour (User Type &amp; Age)'>
-      <table>
-        <view>
-          <datasources>
-            <datasource caption='citibike_JC_2018_to_2020' name='federated.01lounl0yor8it11i24eh18vb1m8' />
-          </datasources>
-          <datasource-dependencies datasource='federated.01lounl0yor8it11i24eh18vb1m8'>
-            <column caption='Age' datatype='string' name='[Age  (group)]' role='dimension' type='nominal'>
-              <calculation class='categorical-bin' column='[Calculation_463307827520397315]' new-bin='true'>
-                <bin default-name='false' value='&quot;20-&quot;'>
-                  <value>17</value>
-                  <value>18</value>
-                  <value>19</value>
-                </bin>
-                <bin default-name='false' value='&quot;20s&quot;'>
-                  <value>20</value>
-                  <value>21</value>
-                  <value>22</value>
-                  <value>23</value>
-                  <value>24</value>
-                  <value>25</value>
-                  <value>26</value>
-                  <value>27</value>
-                  <value>28</value>
-                  <value>29</value>
-                </bin>
-                <bin default-name='false' value='&quot;30s&quot;'>
-                  <value>30</value>
-                  <value>31</value>
-                  <value>32</value>
-                  <value>33</value>
-                  <value>34</value>
-                  <value>35</value>
-                  <value>36</value>
-                  <value>37</value>
-                  <value>38</value>
-                  <value>39</value>
-                </bin>
-                <bin default-name='false' value='&quot;40s&quot;'>
-                  <value>40</value>
-                  <value>41</value>
-                  <value>42</value>
-                  <value>43</value>
-                  <value>44</value>
-                  <value>45</value>
-                  <value>46</value>
-                  <value>47</value>
-                  <value>48</value>
-                  <value>49</value>
-                </bin>
-                <bin default-name='false' value='&quot;50s&quot;'>
-                  <value>50</value>
-                  <value>51</value>
-                  <value>52</value>
-                  <value>53</value>
-                  <value>54</value>
-                  <value>55</value>
-                  <value>56</value>
-                  <value>57</value>
-                  <value>58</value>
-                  <value>59</value>
-                </bin>
-                <bin default-name='false' value='&quot;60+&quot;'>
-                  <value>60</value>
-                  <value>61</value>
-                  <value>62</value>
-                  <value>63</value>
-                  <value>64</value>
-                  <value>65</value>
-                  <value>66</value>
-                  <value>67</value>
-                  <value>68</value>
-                  <value>69</value>
-                  <value>70</value>
-                  <value>71</value>
-                  <value>72</value>
-                  <value>73</value>
-                  <value>74</value>
-                  <value>75</value>
-                  <value>76</value>
-                  <value>77</value>
-                  <value>78</value>
-                  <value>79</value>
-                  <value>80</value>
-                </bin>
-              </calculation>
-            </column>
-            <column caption='Age ' datatype='integer' name='[Calculation_463307827520397315]' role='measure' type='quantitative'>
-              <calculation class='tableau' formula='Year(today())-[birth year]' />
-            </column>
-            <column caption='Gender ' datatype='string' name='[Gender (group)]' role='dimension' type='nominal'>
-              <calculation class='categorical-bin' column='[gender]' new-bin='true'>
-                <bin default-name='false' value='&quot;Female&quot;'>
-                  <value>2</value>
-                </bin>
-                <bin default-name='false' value='&quot;Male&quot;'>
-                  <value>1</value>
-                </bin>
-              </calculation>
-            </column>
-            <column caption='Birth Year' datatype='integer' name='[birth year]' role='dimension' type='quantitative' />
-            <column-instance column='[Calculation_463307827520397315]' derivation='Count' name='[cnt:Calculation_463307827520397315:qk]' pivot='key' type='quantitative' />
-            <column-instance column='[starttime]' derivation='Count' name='[cnt:starttime:qk]' pivot='key' type='quantitative' />
-            <column caption='Gender' datatype='integer' name='[gender]' role='measure' type='quantitative' />
-            <column-instance column='[starttime]' derivation='Hour' name='[hr:starttime:qk]' pivot='key' type='quantitative' />
-            <column-instance column='[usertype]' derivation='None' name='[none:usertype:nk]' pivot='key' type='nominal' />
-            <column caption='Starttime' datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
-            <column caption='Usertype' datatype='string' name='[usertype]' role='dimension' type='nominal' />
-            <column-instance column='[starttime]' derivation='Year' name='[yr:starttime:ok]' pivot='key' type='ordinal' />
-          </datasource-dependencies>
-          <slices>
-            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]</column>
-            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]</column>
-          </slices>
-          <aggregation value='true' />
-        </view>
-        <style>
-          <style-rule element='axis'>
-            <encoding attr='space' class='0' field='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:starttime:qk]' field-type='quantitative' fold='true' scope='rows' type='space' />
-          </style-rule>
-        </style>
-        <panes>
-          <pane selection-relaxation-option='selection-relaxation-allow'>
-            <view>
-              <breakdown value='auto' />
-            </view>
-            <mark class='Automatic' />
-          </pane>
-          <pane id='1' selection-relaxation-option='selection-relaxation-allow' y-axis-name='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_463307827520397315:qk]'>
-            <view>
-              <breakdown value='auto' />
-            </view>
-            <mark class='Bar' />
-            <mark-sizing mark-sizing-setting='marks-scaling-off' />
-            <encodings>
-              <color column='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' />
-            </encodings>
-          </pane>
-          <pane id='2' selection-relaxation-option='selection-relaxation-allow' y-axis-name='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:starttime:qk]'>
-            <view>
-              <breakdown value='auto' />
-            </view>
-            <mark class='Automatic' />
-            <encodings>
-              <color column='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' />
-            </encodings>
-          </pane>
-        </panes>
-        <rows>([federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_463307827520397315:qk] + [federated.01lounl0yor8it11i24eh18vb1m8].[cnt:starttime:qk])</rows>
-        <cols>[federated.01lounl0yor8it11i24eh18vb1m8].[hr:starttime:qk]</cols>
-      </table>
-      <simple-id uuid='{113080B9-6A7A-42D5-BF09-25FEAF3B24BA}' />
-    </worksheet>
     <worksheet name='Trips by Month (User Type &amp; Age)'>
+      <layout-options>
+        <title>
+          <formatted-text>
+            <run bold='true' fontsize='9'>Monthly Trips Breakdown</run>
+            <run>Æ&#10;</run>
+          </formatted-text>
+        </title>
+      </layout-options>
       <table>
         <view>
           <datasources>
@@ -2736,23 +3109,58 @@
             <column caption='Gender' datatype='integer' name='[gender]' role='measure' type='quantitative' />
             <column-instance column='[starttime]' derivation='Month' name='[mn:starttime:ok]' pivot='key' type='ordinal' />
             <column-instance column='[usertype]' derivation='None' name='[none:usertype:nk]' pivot='key' type='nominal' />
-            <column caption='Starttime' datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
+            <column datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
             <column caption='Usertype' datatype='string' name='[usertype]' role='dimension' type='nominal' />
             <column-instance column='[starttime]' derivation='Year' name='[yr:starttime:ok]' pivot='key' type='ordinal' />
           </datasource-dependencies>
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' filter-group='10'>
+            <groupfilter function='level-members' level='[Gender (group)]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <filter class='categorical' column='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' filter-group='9'>
+            <groupfilter function='level-members' level='[yr:starttime:ok]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
           <slices>
-            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]</column>
             <column>[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]</column>
+            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]</column>
           </slices>
           <aggregation value='true' />
         </view>
         <style>
           <style-rule element='axis'>
-            <format attr='title' class='0' field='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:starttime:qk]' scope='rows' value='Cont of Trips' />
+            <format attr='title' class='0' field='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:starttime:qk]' scope='rows' value='# of Trips' />
             <encoding attr='space' class='0' field='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_463307827520397315:qk]' field-type='quantitative' fold='true' scope='rows' type='space' />
+            <format attr='width' field='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:starttime:qk]' value='84' />
+            <format attr='width' field='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_463307827520397315:qk]' value='84' />
+          </style-rule>
+          <style-rule element='label'>
+            <format attr='text-orientation' field='[federated.01lounl0yor8it11i24eh18vb1m8].[mn:starttime:ok]' value='0' />
+            <format attr='text-format' field='[federated.01lounl0yor8it11i24eh18vb1m8].[mn:starttime:ok]' value='iLLL' />
           </style-rule>
           <style-rule element='mark'>
             <encoding attr='color' field='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:starttime:qk]' palette='blue_10_0' type='interpolated' />
+          </style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='cols' value='false' />
+          </style-rule>
+          <style-rule element='legend'>
+            <format attr='font-size' value='6' />
+          </style-rule>
+          <style-rule element='legend-title-text'>
+            <format attr='color' field='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' value='User Type' />
+            <format attr='color' field='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' value='Age' />
+          </style-rule>
+          <style-rule element='quick-filter'>
+            <format attr='title' field='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' value='Year&#10;'>
+              <formatted-text>
+                <run fontsize='8'>Year</run>
+                <run>Æ&#10;</run>
+              </formatted-text>
+            </format>
+            <format attr='title' field='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' value='Gender '>
+              <formatted-text>
+                <run fontsize='8'>Gender </run>
+              </formatted-text>
+            </format>
           </style-rule>
         </style>
         <panes>
@@ -2781,7 +3189,7 @@
             <view>
               <breakdown value='auto' />
             </view>
-            <mark class='Automatic' />
+            <mark class='Line' />
             <mark-sizing mark-sizing-setting='marks-scaling-off' />
             <encodings>
               <color column='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' />
@@ -2799,189 +3207,307 @@
       </table>
       <simple-id uuid='{FA140633-92FB-439A-9FBA-E7D249C52A8D}' />
     </worksheet>
-    <worksheet name='Trips by Weekday (User Type &amp; Age) (2)'>
-      <table>
-        <view>
-          <datasources>
-            <datasource caption='citibike_JC_2018_to_2020' name='federated.01lounl0yor8it11i24eh18vb1m8' />
-          </datasources>
-          <datasource-dependencies datasource='federated.01lounl0yor8it11i24eh18vb1m8'>
-            <column caption='Age' datatype='string' name='[Age  (group)]' role='dimension' type='nominal'>
-              <calculation class='categorical-bin' column='[Calculation_463307827520397315]' new-bin='true'>
-                <bin default-name='false' value='&quot;20-&quot;'>
-                  <value>17</value>
-                  <value>18</value>
-                  <value>19</value>
-                </bin>
-                <bin default-name='false' value='&quot;20s&quot;'>
-                  <value>20</value>
-                  <value>21</value>
-                  <value>22</value>
-                  <value>23</value>
-                  <value>24</value>
-                  <value>25</value>
-                  <value>26</value>
-                  <value>27</value>
-                  <value>28</value>
-                  <value>29</value>
-                </bin>
-                <bin default-name='false' value='&quot;30s&quot;'>
-                  <value>30</value>
-                  <value>31</value>
-                  <value>32</value>
-                  <value>33</value>
-                  <value>34</value>
-                  <value>35</value>
-                  <value>36</value>
-                  <value>37</value>
-                  <value>38</value>
-                  <value>39</value>
-                </bin>
-                <bin default-name='false' value='&quot;40s&quot;'>
-                  <value>40</value>
-                  <value>41</value>
-                  <value>42</value>
-                  <value>43</value>
-                  <value>44</value>
-                  <value>45</value>
-                  <value>46</value>
-                  <value>47</value>
-                  <value>48</value>
-                  <value>49</value>
-                </bin>
-                <bin default-name='false' value='&quot;50s&quot;'>
-                  <value>50</value>
-                  <value>51</value>
-                  <value>52</value>
-                  <value>53</value>
-                  <value>54</value>
-                  <value>55</value>
-                  <value>56</value>
-                  <value>57</value>
-                  <value>58</value>
-                  <value>59</value>
-                </bin>
-                <bin default-name='false' value='&quot;60+&quot;'>
-                  <value>60</value>
-                  <value>61</value>
-                  <value>62</value>
-                  <value>63</value>
-                  <value>64</value>
-                  <value>65</value>
-                  <value>66</value>
-                  <value>67</value>
-                  <value>68</value>
-                  <value>69</value>
-                  <value>70</value>
-                  <value>71</value>
-                  <value>72</value>
-                  <value>73</value>
-                  <value>74</value>
-                  <value>75</value>
-                  <value>76</value>
-                  <value>77</value>
-                  <value>78</value>
-                  <value>79</value>
-                  <value>80</value>
-                </bin>
-              </calculation>
-            </column>
-            <column caption='Age ' datatype='integer' name='[Calculation_463307827520397315]' role='measure' type='quantitative'>
-              <calculation class='tableau' formula='Year(today())-[birth year]' />
-            </column>
-            <column caption='Gender ' datatype='string' name='[Gender (group)]' role='dimension' type='nominal'>
-              <calculation class='categorical-bin' column='[gender]' new-bin='true'>
-                <bin default-name='false' value='&quot;Female&quot;'>
-                  <value>2</value>
-                </bin>
-                <bin default-name='false' value='&quot;Male&quot;'>
-                  <value>1</value>
-                </bin>
-              </calculation>
-            </column>
-            <column caption='Birth Year' datatype='integer' name='[birth year]' role='dimension' type='quantitative' />
-            <column-instance column='[Calculation_463307827520397315]' derivation='Count' name='[cnt:Calculation_463307827520397315:qk]' pivot='key' type='quantitative' />
-            <column-instance column='[starttime]' derivation='Count' name='[cnt:starttime:qk]' pivot='key' type='quantitative' />
-            <column caption='Gender' datatype='integer' name='[gender]' role='measure' type='quantitative' />
-            <column-instance column='[usertype]' derivation='None' name='[none:usertype:nk]' pivot='key' type='nominal' />
-            <column caption='Starttime' datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
-            <column caption='Usertype' datatype='string' name='[usertype]' role='dimension' type='nominal' />
-            <column-instance column='[starttime]' derivation='Weekday' name='[wd:starttime:ok]' pivot='key' type='ordinal' />
-            <column-instance column='[starttime]' derivation='Year' name='[yr:starttime:ok]' pivot='key' type='ordinal' />
-          </datasource-dependencies>
-          <slices>
-            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]</column>
-            <column>[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]</column>
-          </slices>
-          <aggregation value='true' />
-        </view>
-        <style>
-          <style-rule element='axis'>
-            <format attr='title' class='0' field='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:starttime:qk]' scope='rows' value='Cont of Trips' />
-            <encoding attr='space' class='0' field='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_463307827520397315:qk]' field-type='quantitative' fold='true' scope='rows' type='space' />
-          </style-rule>
-          <style-rule element='cell'>
-            <format attr='width' field='[federated.01lounl0yor8it11i24eh18vb1m8].[wd:starttime:ok]' value='81' />
-          </style-rule>
-          <style-rule element='mark'>
-            <encoding attr='color' field='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:starttime:qk]' palette='blue_10_0' type='interpolated' />
-          </style-rule>
-        </style>
-        <panes>
-          <pane selection-relaxation-option='selection-relaxation-allow'>
-            <view>
-              <breakdown value='auto' />
-            </view>
-            <mark class='Automatic' />
-            <style>
-              <style-rule element='pane'>
-                <format attr='minwidth' value='-1' />
-                <format attr='maxwidth' value='-1' />
-              </style-rule>
-            </style>
-          </pane>
-          <pane id='1' selection-relaxation-option='selection-relaxation-allow' y-axis-name='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:starttime:qk]'>
-            <view>
-              <breakdown value='auto' />
-            </view>
-            <mark class='Bar' />
-            <mark-sizing mark-sizing-setting='marks-scaling-off' />
-            <encodings>
-              <color column='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' />
-            </encodings>
-            <style>
-              <style-rule element='mark'>
-                <format attr='size' value='1.2193922996520996' />
-              </style-rule>
-            </style>
-          </pane>
-          <pane id='2' selection-relaxation-option='selection-relaxation-allow' y-axis-name='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_463307827520397315:qk]'>
-            <view>
-              <breakdown value='auto' />
-            </view>
-            <mark class='Automatic' />
-            <mark-sizing mark-sizing-setting='marks-scaling-off' />
-            <encodings>
-              <color column='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' />
-              <size column='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_463307827520397315:qk]' />
-            </encodings>
-            <style>
-              <style-rule element='mark'>
-                <format attr='size' value='0.66966849565505981' />
-              </style-rule>
-            </style>
-          </pane>
-        </panes>
-        <rows>([federated.01lounl0yor8it11i24eh18vb1m8].[cnt:starttime:qk] + [federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_463307827520397315:qk])</rows>
-        <cols>[federated.01lounl0yor8it11i24eh18vb1m8].[wd:starttime:ok]</cols>
-      </table>
-      <simple-id uuid='{5D2FEC6C-9E28-49F9-9119-02A1614E52D3}' />
-    </worksheet>
   </worksheets>
   <dashboards>
     <dashboard name='Age &amp; Gender'>
+      <layout-options>
+        <title>
+          <formatted-text>
+            <run bold='true' fontsize='15'>Age and Gender Demographics</run>
+          </formatted-text>
+        </title>
+      </layout-options>
       <style />
-      <size maxheight='1000' maxwidth='1000' minheight='1000' minwidth='1000' sizing-mode='fixed' />
+      <size maxheight='1000' maxwidth='1000' minheight='1000' minwidth='1000' preset-index='17' sizing-mode='fixed' />
+      <datasources>
+        <datasource caption='citibike_JC_2018_to_2020' name='federated.01lounl0yor8it11i24eh18vb1m8' />
+      </datasources>
+      <datasource-dependencies datasource='federated.01lounl0yor8it11i24eh18vb1m8'>
+        <column caption='Age' datatype='string' name='[Age  (group)]' role='dimension' type='nominal'>
+          <calculation class='categorical-bin' column='[Calculation_463307827520397315]' new-bin='true'>
+            <bin default-name='false' value='&quot;20-&quot;'>
+              <value>17</value>
+              <value>18</value>
+              <value>19</value>
+            </bin>
+            <bin default-name='false' value='&quot;20s&quot;'>
+              <value>20</value>
+              <value>21</value>
+              <value>22</value>
+              <value>23</value>
+              <value>24</value>
+              <value>25</value>
+              <value>26</value>
+              <value>27</value>
+              <value>28</value>
+              <value>29</value>
+            </bin>
+            <bin default-name='false' value='&quot;30s&quot;'>
+              <value>30</value>
+              <value>31</value>
+              <value>32</value>
+              <value>33</value>
+              <value>34</value>
+              <value>35</value>
+              <value>36</value>
+              <value>37</value>
+              <value>38</value>
+              <value>39</value>
+            </bin>
+            <bin default-name='false' value='&quot;40s&quot;'>
+              <value>40</value>
+              <value>41</value>
+              <value>42</value>
+              <value>43</value>
+              <value>44</value>
+              <value>45</value>
+              <value>46</value>
+              <value>47</value>
+              <value>48</value>
+              <value>49</value>
+            </bin>
+            <bin default-name='false' value='&quot;50s&quot;'>
+              <value>50</value>
+              <value>51</value>
+              <value>52</value>
+              <value>53</value>
+              <value>54</value>
+              <value>55</value>
+              <value>56</value>
+              <value>57</value>
+              <value>58</value>
+              <value>59</value>
+            </bin>
+            <bin default-name='false' value='&quot;60+&quot;'>
+              <value>60</value>
+              <value>61</value>
+              <value>62</value>
+              <value>63</value>
+              <value>64</value>
+              <value>65</value>
+              <value>66</value>
+              <value>67</value>
+              <value>68</value>
+              <value>69</value>
+              <value>70</value>
+              <value>71</value>
+              <value>72</value>
+              <value>73</value>
+              <value>74</value>
+              <value>75</value>
+              <value>76</value>
+              <value>77</value>
+              <value>78</value>
+              <value>79</value>
+              <value>80</value>
+            </bin>
+          </calculation>
+        </column>
+        <column caption='Age ' datatype='integer' name='[Calculation_463307827520397315]' role='measure' type='quantitative'>
+          <calculation class='tableau' formula='Year(today())-[birth year]' />
+        </column>
+        <column caption='Gender ' datatype='string' name='[Gender (group)]' role='dimension' type='nominal'>
+          <calculation class='categorical-bin' column='[gender]' new-bin='true'>
+            <bin default-name='false' value='&quot;Female&quot;'>
+              <value>2</value>
+            </bin>
+            <bin default-name='false' value='&quot;Male&quot;'>
+              <value>1</value>
+            </bin>
+          </calculation>
+        </column>
+        <column caption='Gender' datatype='integer' name='[gender]' role='measure' type='quantitative' />
+        <column-instance column='[usertype]' derivation='None' name='[none:usertype:nk]' pivot='key' type='nominal' />
+        <column datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
+        <column caption='Usertype' datatype='string' name='[usertype]' role='dimension' type='nominal' />
+        <column-instance column='[starttime]' derivation='Year' name='[yr:starttime:ok]' pivot='key' type='ordinal' />
+      </datasource-dependencies>
+      <zones>
+        <zone _.fcp.SetMembershipControl.false...type='layout-basic' _.fcp.SetMembershipControl.true...type-v2='layout-basic' h='100000' id='2' w='100000' x='0' y='0'>
+          <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='98400' id='43' param='horz' w='98400' x='800' y='800'>
+            <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='98400' id='40' param='horz' w='98400' x='800' y='800'>
+              <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='98400' id='37' param='horz' w='98400' x='800' y='800'>
+                <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='98400' id='34' param='horz' w='98400' x='800' y='800'>
+                  <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='98400' id='25' param='vert' w='98400' x='800' y='800'>
+                    <zone _.fcp.SetMembershipControl.false...type='title' _.fcp.SetMembershipControl.true...type-v2='title' fixed-size='60' h='6800' id='26' is-fixed='true' w='98400' x='800' y='800'>
+                      <zone-style>
+                        <format attr='border-color' value='#000000' />
+                        <format attr='border-style' value='none' />
+                        <format attr='border-width' value='0' />
+                        <format attr='margin' value='4' />
+                      </zone-style>
+                    </zone>
+                    <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='91600' id='11' param='horz' w='98400' x='800' y='7600'>
+                      <zone _.fcp.SetMembershipControl.false...type='layout-basic' _.fcp.SetMembershipControl.true...type-v2='layout-basic' h='91600' id='9' w='98400' x='800' y='7600'>
+                        <zone h='30991' id='8' name='Average Time Demographics' w='98400' x='800' y='44092'>
+                          <zone-style>
+                            <format attr='border-color' value='#000000' />
+                            <format attr='border-style' value='none' />
+                            <format attr='border-width' value='0' />
+                            <format attr='margin' value='4' />
+                          </zone-style>
+                        </zone>
+                        <zone _.fcp.SetMembershipControl.false...type='text' _.fcp.SetMembershipControl.true...type-v2='text' forceUpdate='true' h='24117' id='23' w='98400' x='800' y='75083'>
+                          <formatted-text>
+                            <run bold='true' fontcolor='#000000'>Age and Gender Analysis</run>
+                            <run>Æ&#10;</run>
+                            <run fontsize='8'>- Male riders have a higher average age than their female riders.</run>
+                            <run>Æ&#10;</run>
+                            <run fontsize='8'>-  20s and 30s age group  are the most popular age group for customers.  </run>
+                            <run>Æ&#10;</run>
+                            <run fontsize='8'>- 30s and 40s are teh most popular age group for subscribers.</run>
+                            <run>Æ&#10;&#10;</run>
+                            <run bold='true' fontcolor='#000000'>Trips and Duration Analysis</run>
+                            <run>Æ&#10;</run>
+                            <run fontsize='8'>- Male predominantly takes more bike trips than their female counterparts.</run>
+                            <run>Æ&#10;</run>
+                            <run fontsize='8'>- Female Customers in the 20- age group have the highest average trip duration.</run>
+                            <run>Æ&#10;</run>
+                            <run fontsize='8'>- Male and Female customers have an average of  trip of  35 minutes and 60 minutes respectively. </run>
+                            <run>Æ&#10;</run>
+                            <run fontsize='8'>- Majority of subscribers spend 10.5 minutes per trip with the exception of the 20- age group who takes average of 22 minutes per trip.</run>
+                            <run>Æ&#10;</run>
+                            <run fontsize='8'>- Majority of the trips are made by male subscribers in the 20s -40s age group  and the female 30s age group.</run>
+                            <run>Æ&#10;&#10;&#10;&#10;&#10;&#10;</run>
+                          </formatted-text>
+                          <zone-style>
+                            <format attr='border-color' value='#000000' />
+                            <format attr='border-style' value='none' />
+                            <format attr='border-width' value='0' />
+                            <format attr='margin' value='4' />
+                          </zone-style>
+                        </zone>
+                        <zone h='36492' id='27' name='Gender &amp; Age' w='49200' x='800' y='7600'>
+                          <zone-style>
+                            <format attr='border-color' value='#000000' />
+                            <format attr='border-style' value='none' />
+                            <format attr='border-width' value='0' />
+                            <format attr='margin' value='4' />
+                          </zone-style>
+                        </zone>
+                        <zone h='36492' id='29' name='Gender &amp; Age (2)' w='49200' x='50000' y='7600'>
+                          <zone-style>
+                            <format attr='border-color' value='#000000' />
+                            <format attr='border-style' value='none' />
+                            <format attr='border-width' value='0' />
+                            <format attr='margin' value='4' />
+                          </zone-style>
+                        </zone>
+                      </zone>
+                    </zone>
+                  </zone>
+                </zone>
+              </zone>
+            </zone>
+          </zone>
+          <zone-style>
+            <format attr='border-color' value='#000000' />
+            <format attr='border-style' value='none' />
+            <format attr='border-width' value='0' />
+            <format attr='margin' value='8' />
+          </zone-style>
+        </zone>
+        <zone _.fcp.SetMembershipControl.false...type='filter' _.fcp.SetMembershipControl.true...type-v2='filter' h='5700' id='35' mode='checkdropdown' name='Gender &amp; Age (2)' param='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' values='database' w='13400' x='71600' y='1200' />
+        <zone _.fcp.SetMembershipControl.false...type='filter' _.fcp.SetMembershipControl.true...type-v2='filter' h='5000' id='38' mode='checkdropdown' name='Gender &amp; Age (2)' param='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' values='database' w='12400' x='48200' y='1200' />
+        <zone _.fcp.SetMembershipControl.false...type='filter' _.fcp.SetMembershipControl.true...type-v2='filter' h='4700' id='41' mode='checkdropdown' name='Gender &amp; Age (2)' param='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' values='database' w='10600' x='60800' y='1400' />
+        <zone _.fcp.SetMembershipControl.false...type='filter' _.fcp.SetMembershipControl.true...type-v2='filter' h='4800' id='44' mode='checkdropdown' name='Average Time Demographics' param='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' values='database' w='11700' x='85100' y='1400' />
+      </zones>
+      <devicelayouts>
+        <devicelayout auto-generated='true' name='Phone'>
+          <size maxheight='1200' minheight='1200' sizing-mode='vscroll' />
+          <zones>
+            <zone _.fcp.SetMembershipControl.false...type='layout-basic' _.fcp.SetMembershipControl.true...type-v2='layout-basic' h='100000' id='32' w='100000' x='0' y='0'>
+              <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='98400' id='31' param='vert' w='98400' x='800' y='800'>
+                <zone _.fcp.SetMembershipControl.false...type='title' _.fcp.SetMembershipControl.true...type-v2='title' h='5000' id='26' w='98400' x='800' y='800'>
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+                <zone fixed-size='280' h='44714' id='27' is-fixed='true' name='Gender &amp; Age' w='49200' x='800' y='11900'>
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+                <zone fixed-size='280' h='44714' id='29' is-fixed='true' name='Gender &amp; Age (2)' w='49200' x='50000' y='11900'>
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+                <zone fixed-size='116' h='12465' id='8' is-fixed='true' name='Average Time Demographics' w='98400' x='800' y='69078'>
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+                <zone _.fcp.SetMembershipControl.false...type='text' _.fcp.SetMembershipControl.true...type-v2='text' forceUpdate='true' h='17657' id='23' w='98400' x='800' y='81543'>
+                  <formatted-text>
+                    <run bold='true' fontcolor='#000000'>Age and Gender Analysis</run>
+                    <run>Æ&#10;</run>
+                    <run fontsize='8'>- Male riders have a higher average age than their female riders.</run>
+                    <run>Æ&#10;</run>
+                    <run fontsize='8'>-  20s and 30s age group  are the most popular age group for customers.  </run>
+                    <run>Æ&#10;</run>
+                    <run fontsize='8'>- 30s and 40s are teh most popular age group for subscribers.</run>
+                    <run>Æ&#10;&#10;</run>
+                    <run bold='true' fontcolor='#000000'>Trips and Duration Analysis</run>
+                    <run>Æ&#10;</run>
+                    <run fontsize='8'>- Male predominantly takes more bike trips than their female counterparts.</run>
+                    <run>Æ&#10;</run>
+                    <run fontsize='8'>- Female Customers in the 20- age group have the highest average trip duration.</run>
+                    <run>Æ&#10;</run>
+                    <run fontsize='8'>- Male and Female customers have an average of  trip of  35 minutes and 60 minutes respectively. </run>
+                    <run>Æ&#10;</run>
+                    <run fontsize='8'>- Majority of subscribers spend 10.5 minutes per trip with the exception of the 20- age group who takes average of 22 minutes per trip.</run>
+                    <run>Æ&#10;</run>
+                    <run fontsize='8'>- Majority of the trips are made by male subscribers in the 20s -40s age group  and the female 30s age group.</run>
+                    <run>Æ&#10;&#10;&#10;&#10;&#10;&#10;</run>
+                  </formatted-text>
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+              </zone>
+              <zone-style>
+                <format attr='border-color' value='#000000' />
+                <format attr='border-style' value='none' />
+                <format attr='border-width' value='0' />
+                <format attr='margin' value='8' />
+              </zone-style>
+            </zone>
+          </zones>
+        </devicelayout>
+      </devicelayouts>
+      <simple-id uuid='{86A3304A-4D56-4D3A-A279-A5B9A52869FE}' />
+    </dashboard>
+    <dashboard name='Time by Demographics'>
+      <layout-options>
+        <title>
+          <formatted-text>
+            <run>Trips by Dates</run>
+          </formatted-text>
+        </title>
+      </layout-options>
+      <style />
+      <size maxheight='800' maxwidth='1000' minheight='800' minwidth='1000' />
       <datasources>
         <datasource caption='citibike_JC_2018_to_2020' name='federated.01lounl0yor8it11i24eh18vb1m8' />
       </datasources>
@@ -2997,15 +3523,13 @@
           </calculation>
         </column>
         <column caption='Gender' datatype='integer' name='[gender]' role='measure' type='quantitative' />
-        <column-instance column='[usertype]' derivation='None' name='[none:usertype:nk]' pivot='key' type='nominal' />
-        <column caption='Starttime' datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
-        <column caption='Usertype' datatype='string' name='[usertype]' role='dimension' type='nominal' />
+        <column datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
         <column-instance column='[starttime]' derivation='Year' name='[yr:starttime:ok]' pivot='key' type='ordinal' />
       </datasource-dependencies>
       <zones>
-        <zone _.fcp.SetMembershipControl.false...type='layout-basic' _.fcp.SetMembershipControl.true...type-v2='layout-basic' h='100000' id='2' w='100000' x='0' y='0'>
-          <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='98400' id='25' param='vert' w='98400' x='800' y='800'>
-            <zone _.fcp.SetMembershipControl.false...type='title' _.fcp.SetMembershipControl.true...type-v2='title' h='5000' id='26' w='98400' x='800' y='800'>
+        <zone _.fcp.SetMembershipControl.false...type='layout-basic' _.fcp.SetMembershipControl.true...type-v2='layout-basic' h='100000' id='4' w='100000' x='0' y='0'>
+          <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='98000' id='20' param='vert' w='98400' x='800' y='1000'>
+            <zone _.fcp.SetMembershipControl.false...type='title' _.fcp.SetMembershipControl.true...type-v2='title' h='6250' id='21' w='98400' x='800' y='1000'>
               <zone-style>
                 <format attr='border-color' value='#000000' />
                 <format attr='border-style' value='none' />
@@ -3013,9 +3537,9 @@
                 <format attr='margin' value='4' />
               </zone-style>
             </zone>
-            <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='93400' id='11' param='horz' w='98400' x='800' y='5800'>
-              <zone _.fcp.SetMembershipControl.false...type='layout-basic' _.fcp.SetMembershipControl.true...type-v2='layout-basic' h='93400' id='9' w='83500' x='800' y='5800'>
-                <zone h='26671' id='8' name='Average Time Demographics' w='83500' x='800' y='53639'>
+            <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='91750' id='7' param='horz' w='98400' x='800' y='7250'>
+              <zone _.fcp.SetMembershipControl.false...type='layout-basic' _.fcp.SetMembershipControl.true...type-v2='layout-basic' h='91750' id='5' w='98400' x='800' y='7250'>
+                <zone h='48125' id='3' name='Sheet 12' w='98400' x='800' y='50875'>
                   <zone-style>
                     <format attr='border-color' value='#000000' />
                     <format attr='border-style' value='none' />
@@ -3023,94 +3547,7 @@
                     <format attr='margin' value='4' />
                   </zone-style>
                 </zone>
-                <zone h='36828' id='18' name='Gender &amp; Age' w='83500' x='800' y='5800'>
-                  <zone-style>
-                    <format attr='border-color' value='#000000' />
-                    <format attr='border-style' value='none' />
-                    <format attr='border-width' value='0' />
-                    <format attr='margin' value='4' />
-                  </zone-style>
-                </zone>
-                <zone _.fcp.SetMembershipControl.false...type='text' _.fcp.SetMembershipControl.true...type-v2='text' forceUpdate='true' h='11011' id='21' w='83500' x='800' y='42628'>
-                  <formatted-text>
-                    <run fontcolor='#000000'>Trends in Age &amp; Gender Demographics</run>
-                    <run>
-- 30s and 40s are the most popular age group for subscribers of both genders.
-- 20s and 30s are the most popular age group for customers of both genders.
-- Average age for customers are generally lower than their subscribers.
-- Male riders have a higher average age than their female riders.
-</run>
-                  </formatted-text>
-                  <zone-style>
-                    <format attr='border-color' value='#000000' />
-                    <format attr='border-style' value='none' />
-                    <format attr='border-width' value='0' />
-                    <format attr='margin' value='4' />
-                  </zone-style>
-                </zone>
-                <zone _.fcp.SetMembershipControl.false...type='text' _.fcp.SetMembershipControl.true...type-v2='text' forceUpdate='true' h='18890' id='23' w='83500' x='800' y='80310'>
-                  <formatted-text>
-                    <run bold='true' fontcolor='#000000'>Customers</run>
-                    <run>
-- Male and Female have an average of  trip of  35 minutes and 60 minutes respectively.
-- Majority of trips are made by the 20s and 30s age group for both genders.
-
-</run>
-                    <run bold='true' fontcolor='#000000'>Subscribers</run>
-                    <run>
-- Majority of subscribers spend 10 minutes per trip with the exception of the 20 and under group spends about 22 minutes per trip.
-- Majority of the trips are made by male subscribers in the 20s -40s age group  and the female 30s age group.</run>
-                  </formatted-text>
-                  <zone-style>
-                    <format attr='border-color' value='#000000' />
-                    <format attr='border-style' value='none' />
-                    <format attr='border-width' value='0' />
-                    <format attr='margin' value='4' />
-                  </zone-style>
-                </zone>
-              </zone>
-              <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' fixed-size='149' h='93400' id='10' is-fixed='true' param='vert' w='14900' x='84300' y='5800'>
-                <zone _.fcp.SetMembershipControl.false...type='filter' _.fcp.SetMembershipControl.true...type-v2='filter' h='6100' id='22' mode='checkdropdown' name='Gender &amp; Age' param='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' values='database' w='14900' x='84300' y='5800'>
-                  <zone-style>
-                    <format attr='border-color' value='#000000' />
-                    <format attr='border-style' value='none' />
-                    <format attr='border-width' value='0' />
-                    <format attr='margin' value='4' />
-                  </zone-style>
-                </zone>
-                <zone _.fcp.SetMembershipControl.false...type='filter' _.fcp.SetMembershipControl.true...type-v2='filter' h='6100' id='14' mode='checkdropdown' name='Average Time Demographics' param='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' values='database' w='14900' x='84300' y='11900'>
-                  <zone-style>
-                    <format attr='border-color' value='#000000' />
-                    <format attr='border-style' value='none' />
-                    <format attr='border-width' value='0' />
-                    <format attr='margin' value='4' />
-                  </zone-style>
-                </zone>
-                <zone _.fcp.SetMembershipControl.false...type='filter' _.fcp.SetMembershipControl.true...type-v2='filter' h='6100' id='17' mode='checkdropdown' name='Average Time Demographics' param='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' values='database' w='14900' x='84300' y='18000'>
-                  <zone-style>
-                    <format attr='border-color' value='#000000' />
-                    <format attr='border-style' value='none' />
-                    <format attr='border-width' value='0' />
-                    <format attr='margin' value='4' />
-                  </zone-style>
-                </zone>
-                <zone _.fcp.SetMembershipControl.false...type='color' _.fcp.SetMembershipControl.true...type-v2='color' h='7200' id='19' name='Gender &amp; Age' pane-specification-id='0' param='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' w='14900' x='84300' y='24100'>
-                  <zone-style>
-                    <format attr='border-color' value='#000000' />
-                    <format attr='border-style' value='none' />
-                    <format attr='border-width' value='0' />
-                    <format attr='margin' value='4' />
-                  </zone-style>
-                </zone>
-                <zone _.fcp.SetMembershipControl.false...type='color' _.fcp.SetMembershipControl.true...type-v2='color' fixed-size='71' h='7900' id='12' is-fixed='true' name='Average Time Demographics' pane-specification-id='1' param='[federated.01lounl0yor8it11i24eh18vb1m8].[avg:Calculation_1381197726900985858:qk]' w='14900' x='84300' y='31300'>
-                  <zone-style>
-                    <format attr='border-color' value='#000000' />
-                    <format attr='border-style' value='none' />
-                    <format attr='border-width' value='0' />
-                    <format attr='margin' value='4' />
-                  </zone-style>
-                </zone>
-                <zone _.fcp.SetMembershipControl.false...type='color' _.fcp.SetMembershipControl.true...type-v2='color' h='7300' id='20' name='Average Time Demographics' pane-specification-id='2' param='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_1381197726900985858:qk]' w='14900' x='84300' y='39200'>
+                <zone h='43625' id='10' name='Trips by Month (User Type &amp; Age)' w='98400' x='800' y='7250'>
                   <zone-style>
                     <format attr='border-color' value='#000000' />
                     <format attr='border-style' value='none' />
@@ -3128,45 +3565,124 @@
             <format attr='margin' value='8' />
           </zone-style>
         </zone>
+        <zone _.fcp.SetMembershipControl.false...type='color' _.fcp.SetMembershipControl.true...type-v2='color' h='4500' id='8' leg-item-layout='horz' name='Sheet 12' pane-specification-id='2' param='[federated.01lounl0yor8it11i24eh18vb1m8].[io:Weekday:nk]' w='30800' x='9200' y='58375' />
+        <zone _.fcp.SetMembershipControl.false...type='filter' _.fcp.SetMembershipControl.true...type-v2='filter' h='7625' id='11' mode='checkdropdown' name='Trips by Month (User Type &amp; Age)' param='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' w='15900' x='78400' y='1125' />
+        <zone _.fcp.SetMembershipControl.false...type='filter' _.fcp.SetMembershipControl.true...type-v2='filter' h='7500' id='12' mode='checkdropdown' name='Trips by Month (User Type &amp; Age)' param='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' w='15100' x='62200' y='1375' />
+        <zone _.fcp.SetMembershipControl.false...type='color' _.fcp.SetMembershipControl.true...type-v2='color' h='8125' id='13' leg-item-layout='vert' name='Trips by Month (User Type &amp; Age)' pane-specification-id='1' param='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' w='10400' x='46400' y='54875' />
+        <zone _.fcp.SetMembershipControl.false...type='color' _.fcp.SetMembershipControl.true...type-v2='color' h='19250' id='14' leg-item-layout='grid' name='Trips by Month (User Type &amp; Age)' pane-specification-id='2' param='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' w='11000' x='20700' y='13625' />
       </zones>
       <devicelayouts>
         <devicelayout auto-generated='true' name='Phone'>
-          <size maxheight='700' minheight='700' sizing-mode='vscroll' />
-          <zones />
+          <size maxheight='1050' minheight='1050' sizing-mode='vscroll' />
+          <zones>
+            <zone _.fcp.SetMembershipControl.false...type='layout-basic' _.fcp.SetMembershipControl.true...type-v2='layout-basic' h='100000' id='17' w='100000' x='0' y='0'>
+              <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='98000' id='16' param='vert' w='98400' x='800' y='1000'>
+                <zone _.fcp.SetMembershipControl.false...type='filter' _.fcp.SetMembershipControl.true...type-v2='filter' h='13125' id='11' mode='checkdropdown' name='Trips by Month (User Type &amp; Age)' param='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' w='16000' x='83200' y='31458'>
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+                <zone _.fcp.SetMembershipControl.false...type='filter' _.fcp.SetMembershipControl.true...type-v2='filter' h='15583' id='12' mode='checkdropdown' name='Trips by Month (User Type &amp; Age)' param='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' w='16000' x='83200' y='44583'>
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+                <zone fixed-size='280' h='49000' id='10' is-fixed='true' name='Trips by Month (User Type &amp; Age)' w='82400' x='800' y='1000'>
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+                <zone _.fcp.SetMembershipControl.false...type='color' _.fcp.SetMembershipControl.true...type-v2='color' h='9000' id='13' name='Trips by Month (User Type &amp; Age)' pane-specification-id='1' param='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' w='16000' x='83200' y='60166'>
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+                <zone _.fcp.SetMembershipControl.false...type='color' _.fcp.SetMembershipControl.true...type-v2='color' h='15583' id='14' name='Trips by Month (User Type &amp; Age)' pane-specification-id='2' param='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' w='16000' x='83200' y='69166'>
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+                <zone fixed-size='280' h='49000' id='3' is-fixed='true' name='Sheet 12' w='82400' x='800' y='50000'>
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+                <zone _.fcp.SetMembershipControl.false...type='color' _.fcp.SetMembershipControl.true...type-v2='color' h='15583' id='18' name='Sheet 12' pane-specification-id='0' param='[federated.01lounl0yor8it11i24eh18vb1m8].[wd:starttime:ok]' w='16000' x='83200' y='1000'>
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+              </zone>
+              <zone-style>
+                <format attr='border-color' value='#000000' />
+                <format attr='border-style' value='none' />
+                <format attr='border-width' value='0' />
+                <format attr='margin' value='8' />
+              </zone-style>
+            </zone>
+          </zones>
         </devicelayout>
       </devicelayouts>
-      <simple-id uuid='{86A3304A-4D56-4D3A-A279-A5B9A52869FE}' />
+      <simple-id uuid='{4C38500A-5FFD-4ED1-930C-372DA2FDE9DF}' />
     </dashboard>
     <dashboard name='User Types Demographics'>
       <layout-options>
         <title>
           <formatted-text>
-            <run bold='true' fontalignment='1' fontsize='12'>User Types Demographics</run>
+            <run bold='true' fontsize='15'>User Types Demographics</run>
           </formatted-text>
         </title>
       </layout-options>
       <repository-location id='Dashboard1' path='/workbooks/JerseyCityCitibikeAnalysis2018-2020' revision='' />
       <style />
-      <size maxheight='1000' maxwidth='1000' minheight='560' minwidth='420' sizing-mode='range' />
+      <size maxheight='1000' maxwidth='1000' sizing-mode='range' />
       <datasources>
         <datasource caption='citibike_JC_2018_to_2020' name='federated.01lounl0yor8it11i24eh18vb1m8' />
       </datasources>
       <datasource-dependencies datasource='federated.01lounl0yor8it11i24eh18vb1m8'>
         <column-instance column='[usertype]' derivation='None' name='[none:usertype:nk]' pivot='key' type='nominal' />
-        <column caption='Starttime' datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
+        <column datatype='datetime' name='[starttime]' role='dimension' type='ordinal' />
         <column caption='Usertype' datatype='string' name='[usertype]' role='dimension' type='nominal' />
         <column-instance column='[starttime]' derivation='Year' name='[yr:starttime:ok]' pivot='key' type='ordinal' />
       </datasource-dependencies>
       <zones>
         <zone _.fcp.SetMembershipControl.false...type='layout-basic' _.fcp.SetMembershipControl.true...type-v2='layout-basic' h='100000' id='4' w='100000' x='0' y='0'>
-          <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='98144' id='54' param='horz' w='98400' x='800' y='928'>
-            <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='98144' id='52' param='horz' w='98400' x='800' y='928'>
-              <zone _.fcp.SetMembershipControl.false...type='layout-basic' _.fcp.SetMembershipControl.true...type-v2='layout-basic' h='98144' id='50' w='98400' x='800' y='928'>
-                <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='98144' id='44' param='horz' w='76972' x='800' y='928'>
-                  <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='98144' id='29' param='horz' w='76972' x='800' y='928'>
-                    <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='98144' id='27' param='horz' w='76972' x='800' y='928'>
-                      <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='98144' id='23' param='vert' w='76972' x='800' y='928'>
-                        <zone _.fcp.SetMembershipControl.false...type='title' _.fcp.SetMembershipControl.true...type-v2='title' fixed-size='46' h='6264' id='24' is-fixed='true' w='76972' x='800' y='928'>
+          <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='97944' id='54' param='horz' w='98400' x='800' y='1028'>
+            <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='97944' id='52' param='horz' w='98400' x='800' y='1028'>
+              <zone _.fcp.SetMembershipControl.false...type='layout-basic' _.fcp.SetMembershipControl.true...type-v2='layout-basic' h='97944' id='50' w='98400' x='800' y='1028'>
+                <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='97944' id='44' param='horz' w='98400' x='800' y='1028'>
+                  <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='97944' id='29' param='horz' w='98400' x='800' y='1028'>
+                    <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='97944' id='27' param='horz' w='98400' x='800' y='1028'>
+                      <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='97944' id='23' param='vert' w='98400' x='800' y='1028'>
+                        <zone _.fcp.SetMembershipControl.false...type='title' _.fcp.SetMembershipControl.true...type-v2='title' fixed-size='33' h='5270' id='24' is-fixed='true' w='98400' x='800' y='1028'>
                           <zone-style>
                             <format attr='border-color' value='#000000' />
                             <format attr='border-style' value='none' />
@@ -3174,12 +3690,12 @@
                             <format attr='margin' value='4' />
                           </zone-style>
                         </zone>
-                        <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='91880' id='19' param='horz' w='76972' x='800' y='7192'>
-                          <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='91880' id='16' param='horz' w='76972' x='800' y='7192'>
-                            <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='91880' id='10' param='horz' w='76972' x='800' y='7192'>
-                              <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='91880' id='7' param='horz' w='76972' x='800' y='7192'>
-                                <zone _.fcp.SetMembershipControl.false...type='layout-basic' _.fcp.SetMembershipControl.true...type-v2='layout-basic' h='91880' id='5' w='76972' x='800' y='7192'>
-                                  <zone h='25495' id='14' name='Gender (User Type)' w='76972' x='800' y='33563'>
+                        <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='92674' id='19' param='horz' w='98400' x='800' y='6298'>
+                          <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='92674' id='16' param='horz' w='98400' x='800' y='6298'>
+                            <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='92674' id='10' param='horz' w='98400' x='800' y='6298'>
+                              <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='92674' id='7' param='horz' w='98400' x='800' y='6298'>
+                                <zone _.fcp.SetMembershipControl.false...type='layout-basic' _.fcp.SetMembershipControl.true...type-v2='layout-basic' h='92674' id='5' w='98400' x='800' y='6298'>
+                                  <zone h='21597' id='14' name='Gender (User Type)' w='98400' x='800' y='32002'>
                                     <zone-style>
                                       <format attr='border-color' value='#000000' />
                                       <format attr='border-style' value='none' />
@@ -3187,7 +3703,7 @@
                                       <format attr='margin' value='4' />
                                     </zone-style>
                                   </zone>
-                                  <zone h='26371' id='25' name='Trips (User Types)' w='76972' x='800' y='7192'>
+                                  <zone h='25704' id='25' name='Trips (User Types)' w='98400' x='800' y='6298'>
                                     <zone-style>
                                       <format attr='border-color' value='#000000' />
                                       <format attr='border-style' value='none' />
@@ -3195,7 +3711,7 @@
                                       <format attr='margin' value='4' />
                                     </zone-style>
                                   </zone>
-                                  <zone h='40014' id='42' name='Age Group (UserType)' w='76972' x='800' y='59058'>
+                                  <zone h='45373' id='42' name='Age Group (UserType)' w='98400' x='800' y='53599'>
                                     <zone-style>
                                       <format attr='border-color' value='#000000' />
                                       <format attr='border-style' value='none' />
@@ -3212,38 +3728,6 @@
                     </zone>
                   </zone>
                 </zone>
-                <zone _.fcp.SetMembershipControl.false...type='filter' _.fcp.SetMembershipControl.true...type-v2='filter' h='8121' id='49' mode='checkdropdown' name='Age Group (UserType)' param='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' values='database' w='21428' x='77772' y='928'>
-                  <zone-style>
-                    <format attr='border-color' value='#000000' />
-                    <format attr='border-style' value='none' />
-                    <format attr='border-width' value='0' />
-                    <format attr='margin' value='4' />
-                  </zone-style>
-                </zone>
-                <zone _.fcp.SetMembershipControl.false...type='color' _.fcp.SetMembershipControl.true...type-v2='color' h='22622' id='46' name='Gender (User Type)' pane-specification-id='0' param='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' w='21428' x='77772' y='36427'>
-                  <zone-style>
-                    <format attr='border-color' value='#000000' />
-                    <format attr='border-style' value='none' />
-                    <format attr='border-width' value='0' />
-                    <format attr='margin' value='4' />
-                  </zone-style>
-                </zone>
-                <zone _.fcp.SetMembershipControl.false...type='color' _.fcp.SetMembershipControl.true...type-v2='color' h='40023' id='45' name='Age Group (UserType)' pane-specification-id='0' param='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' w='21428' x='77772' y='59049'>
-                  <zone-style>
-                    <format attr='border-color' value='#000000' />
-                    <format attr='border-style' value='none' />
-                    <format attr='border-width' value='0' />
-                    <format attr='margin' value='4' />
-                  </zone-style>
-                </zone>
-                <zone _.fcp.SetMembershipControl.false...type='filter' _.fcp.SetMembershipControl.true...type-v2='filter' h='27378' id='55' mode='checkdropdown' name='Age Group (UserType)' param='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' values='database' w='21428' x='77772' y='9049'>
-                  <zone-style>
-                    <format attr='border-color' value='#000000' />
-                    <format attr='border-style' value='none' />
-                    <format attr='border-width' value='0' />
-                    <format attr='margin' value='4' />
-                  </zone-style>
-                </zone>
               </zone>
             </zone>
           </zone>
@@ -3254,32 +3738,39 @@
             <format attr='margin' value='8' />
           </zone-style>
         </zone>
-        <zone _.fcp.SetMembershipControl.false...type='text' _.fcp.SetMembershipControl.true...type-v2='text' forceUpdate='true' h='14070' id='56' w='74923' x='1846' y='85233'>
+        <zone _.fcp.SetMembershipControl.false...type='text' _.fcp.SetMembershipControl.true...type-v2='text' forceUpdate='true' h='14781' id='56' w='99300' x='700' y='82905'>
           <formatted-text>
-            <run bold='true' fontcolor='#000000' fontsize='10'>Trends in User Types Demographics</run>
             <run>Æ&#10;</run>
-            <run fontcolor='#000000'>1) Great majority of the riders are monthly subscribers of Citibike. </run>
+            <run bold='true' fontcolor='#000000'>Trends in User Types Demographics</run>
             <run>Æ&#10;</run>
-            <run fontcolor='#000000'>2) Male predominately use the service more than the females.</run>
+            <run fontcolor='#000000' fontsize='8'>1) Great majority of the riders are monthly subscribers of Citibike. </run>
             <run>Æ&#10;</run>
-            <run fontcolor='#000000'>3) The most popular age group are users in their 30s.</run>
+            <run fontcolor='#000000' fontsize='8'>2) Male predominately use the service more than the females.</run>
+            <run>Æ&#10;</run>
+            <run fontcolor='#000000' fontsize='8'>3) The most popular age group are users in their 30s.</run>
+            <run>Æ&#10;</run>
+            <run fontcolor='#000000' fontsize='8'>4) Number of Riders have decreased significantly in 2020.</run>
           </formatted-text>
         </zone>
+        <zone _.fcp.SetMembershipControl.false...type='color' _.fcp.SetMembershipControl.true...type-v2='color' h='3213' id='45' leg-item-layout='horz' name='Age Group (UserType)' pane-specification-id='0' param='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' w='84300' x='27500' y='83419' />
+        <zone _.fcp.SetMembershipControl.false...type='filter' _.fcp.SetMembershipControl.true...type-v2='filter' h='6812' id='55' mode='checkdropdown' name='Age Group (UserType)' param='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' values='database' w='16000' x='80300' y='1157' />
+        <zone _.fcp.SetMembershipControl.false...type='filter' _.fcp.SetMembershipControl.true...type-v2='filter' h='6812' id='49' mode='checkdropdown' name='Age Group (UserType)' param='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' values='database' w='16000' x='62900' y='1285' />
+        <zone _.fcp.SetMembershipControl.false...type='color' _.fcp.SetMembershipControl.true...type-v2='color' h='2956' id='46' leg-item-layout='horz' name='Gender (User Type)' pane-specification-id='5' param='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' w='34600' x='64300' y='53085' />
       </zones>
       <devicelayouts>
         <devicelayout auto-generated='true' name='Phone'>
           <layout-options>
             <title>
               <formatted-text>
-                <run bold='true' fontalignment='1' fontsize='12'>User Types Demographics</run>
+                <run bold='true' fontsize='15'>User Types Demographics</run>
               </formatted-text>
             </title>
           </layout-options>
-          <size maxheight='1250' minheight='1250' sizing-mode='vscroll' />
+          <size maxheight='1200' minheight='1200' sizing-mode='vscroll' />
           <zones>
-            <zone _.fcp.SetMembershipControl.false...type='layout-basic' _.fcp.SetMembershipControl.true...type-v2='layout-basic' h='100000' id='72' w='100000' x='0' y='0'>
-              <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='98144' id='71' param='vert' w='98608' x='696' y='928'>
-                <zone _.fcp.SetMembershipControl.false...type='title' _.fcp.SetMembershipControl.true...type-v2='title' fixed-size='46' h='6264' id='24' w='77136' x='696' y='928'>
+            <zone _.fcp.SetMembershipControl.false...type='layout-basic' _.fcp.SetMembershipControl.true...type-v2='layout-basic' h='100000' id='74' w='100000' x='0' y='0'>
+              <zone _.fcp.SetMembershipControl.false...type='layout-flow' _.fcp.SetMembershipControl.true...type-v2='layout-flow' h='97944' id='73' param='vert' w='98400' x='800' y='1028'>
+                <zone _.fcp.SetMembershipControl.false...type='title' _.fcp.SetMembershipControl.true...type-v2='title' fixed-size='33' h='5270' id='24' w='98400' x='800' y='1028'>
                   <zone-style>
                     <format attr='border-color' value='#000000' />
                     <format attr='border-style' value='none' />
@@ -3288,7 +3779,7 @@
                     <format attr='padding' value='0' />
                   </zone-style>
                 </zone>
-                <zone fixed-size='272' h='26374' id='25' is-fixed='true' name='Trips (User Types)' w='77136' x='696' y='7192'>
+                <zone fixed-size='249' h='25707' id='25' is-fixed='true' name='Trips (User Types)' w='98400' x='800' y='6298'>
                   <zone-style>
                     <format attr='border-color' value='#000000' />
                     <format attr='border-style' value='none' />
@@ -3297,70 +3788,73 @@
                     <format attr='padding' value='0' />
                   </zone-style>
                 </zone>
-                <zone fixed-size='262' h='25495' id='14' is-fixed='true' name='Gender (User Type)' w='77136' x='696' y='33566'>
-                  <zone-style>
-                    <format attr='border-color' value='#000000' />
-                    <format attr='border-style' value='none' />
-                    <format attr='border-width' value='0' />
-                    <format attr='margin' value='4' />
-                    <format attr='padding' value='0' />
-                  </zone-style>
-                </zone>
-                <zone _.fcp.SetMembershipControl.false...type='color' _.fcp.SetMembershipControl.true...type-v2='color' h='35814' id='46' name='Gender (User Type)' pane-specification-id='0' param='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' w='21472' x='77832' y='33601'>
-                  <zone-style>
-                    <format attr='border-color' value='#000000' />
-                    <format attr='border-style' value='none' />
-                    <format attr='border-width' value='0' />
-                    <format attr='margin' value='4' />
-                    <format attr='padding' value='0' />
-                  </zone-style>
-                </zone>
-                <zone _.fcp.SetMembershipControl.false...type='filter' _.fcp.SetMembershipControl.true...type-v2='filter' h='20699' id='49' mode='checkdropdown' name='Age Group (UserType)' param='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' values='database' w='21472' x='77832' y='12902'>
-                  <zone-style>
-                    <format attr='border-color' value='#000000' />
-                    <format attr='border-style' value='none' />
-                    <format attr='border-width' value='0' />
-                    <format attr='margin' value='4' />
-                    <format attr='padding' value='0' />
-                  </zone-style>
-                </zone>
-                <zone _.fcp.SetMembershipControl.false...type='filter' _.fcp.SetMembershipControl.true...type-v2='filter' h='11974' id='55' mode='checkdropdown' name='Age Group (UserType)' param='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' values='database' w='21472' x='77832' y='928'>
-                  <zone-style>
-                    <format attr='border-color' value='#000000' />
-                    <format attr='border-style' value='none' />
-                    <format attr='border-width' value='0' />
-                    <format attr='margin' value='4' />
-                    <format attr='padding' value='0' />
-                  </zone-style>
-                </zone>
-                <zone fixed-size='280' h='40011' id='42' is-fixed='true' name='Age Group (UserType)' w='77136' x='696' y='59061'>
-                  <zone-style>
-                    <format attr='border-color' value='#000000' />
-                    <format attr='border-style' value='none' />
-                    <format attr='border-width' value='0' />
-                    <format attr='margin' value='4' />
-                    <format attr='padding' value='0' />
-                  </zone-style>
-                </zone>
-                <zone _.fcp.SetMembershipControl.false...type='color' _.fcp.SetMembershipControl.true...type-v2='color' h='29657' id='45' name='Age Group (UserType)' pane-specification-id='0' param='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' w='21472' x='77832' y='69415'>
-                  <zone-style>
-                    <format attr='border-color' value='#000000' />
-                    <format attr='border-style' value='none' />
-                    <format attr='border-width' value='0' />
-                    <format attr='margin' value='4' />
-                    <format attr='padding' value='0' />
-                  </zone-style>
-                </zone>
-                <zone _.fcp.SetMembershipControl.false...type='text' _.fcp.SetMembershipControl.true...type-v2='text' forceUpdate='true' h='14070' id='56' w='74923' x='1846' y='85233'>
+                <zone _.fcp.SetMembershipControl.false...type='text' _.fcp.SetMembershipControl.true...type-v2='text' forceUpdate='true' h='14139' id='56' w='75000' x='9200' y='27506'>
                   <formatted-text>
-                    <run bold='true' fontcolor='#000000' fontsize='10'>Trends in User Types Demographics</run>
                     <run>Æ&#10;</run>
-                    <run fontcolor='#000000'>1) Great majority of the riders are monthly subscribers of Citibike. </run>
+                    <run bold='true' fontcolor='#000000'>Trends in User Types Demographics</run>
                     <run>Æ&#10;</run>
-                    <run fontcolor='#000000'>2) Male predominately use the service more than the females.</run>
+                    <run fontcolor='#000000' fontsize='8'>1) Great majority of the riders are monthly subscribers of Citibike. </run>
                     <run>Æ&#10;</run>
-                    <run fontcolor='#000000'>3) The most popular age group are users in their 30s.</run>
+                    <run fontcolor='#000000' fontsize='8'>2) Male predominately use the service more than the females.</run>
+                    <run>Æ&#10;</run>
+                    <run fontcolor='#000000' fontsize='8'>3) The most popular age group are users in their 30s.</run>
+                    <run>Æ&#10;</run>
+                    <run fontcolor='#000000' fontsize='8'>4) Number of Riders have decreased significantly in 2020.</run>
                   </formatted-text>
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+                <zone fixed-size='254' h='26221' id='14' is-fixed='true' name='Gender (User Type)' w='98400' x='800' y='32005'>
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+                <zone _.fcp.SetMembershipControl.false...type='color' _.fcp.SetMembershipControl.true...type-v2='color' h='3985' id='46' name='Gender (User Type)' pane-specification-id='5' param='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' w='31300' x='-5300' y='56941'>
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+                <zone _.fcp.SetMembershipControl.false...type='filter' _.fcp.SetMembershipControl.true...type-v2='filter' h='6812' id='55' mode='checkdropdown' name='Age Group (UserType)' param='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' values='database' w='16000' x='80300' y='1157'>
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+                <zone _.fcp.SetMembershipControl.false...type='filter' _.fcp.SetMembershipControl.true...type-v2='filter' h='6812' id='49' mode='checkdropdown' name='Age Group (UserType)' param='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' values='database' w='16000' x='62900' y='1285'>
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+                <zone fixed-size='280' h='40746' id='42' is-fixed='true' name='Age Group (UserType)' w='98400' x='800' y='58226'>
+                  <zone-style>
+                    <format attr='border-color' value='#000000' />
+                    <format attr='border-style' value='none' />
+                    <format attr='border-width' value='0' />
+                    <format attr='margin' value='4' />
+                    <format attr='padding' value='0' />
+                  </zone-style>
+                </zone>
+                <zone _.fcp.SetMembershipControl.false...type='color' _.fcp.SetMembershipControl.true...type-v2='color' h='3085' id='45' name='Age Group (UserType)' pane-specification-id='0' param='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' w='110700' x='500' y='86632'>
                   <zone-style>
                     <format attr='border-color' value='#000000' />
                     <format attr='border-style' value='none' />
@@ -3383,7 +3877,7 @@
       <simple-id uuid='{8C33EF5B-54C4-447D-B5BC-6D1EEB7D75F7}' />
     </dashboard>
   </dashboards>
-  <windows film-mode='true' source-height='89'>
+  <windows film-mode='true' source-height='63'>
     <window class='worksheet' name='Trips (User Types)'>
       <cards>
         <edge name='left'>
@@ -3434,7 +3928,7 @@
         </edge>
         <edge name='right'>
           <strip size='160'>
-            <card pane-specification-id='0' param='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' type='color' />
+            <card pane-specification-id='5' param='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' type='color' />
           </strip>
         </edge>
       </cards>
@@ -3490,7 +3984,7 @@
         </edge>
         <edge name='right'>
           <strip size='160'>
-            <card pane-specification-id='0' param='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' type='color' />
+            <card pane-specification-id='0' param='[federated.01lounl0yor8it11i24eh18vb1m8].[sum:Calculation_463307827520397315:qk]' type='color' />
           </strip>
         </edge>
       </cards>
@@ -3502,6 +3996,41 @@
         </current-page>
       </viewpoint>
       <simple-id uuid='{E2235C90-D5D5-4B1A-83A0-10506763A4C9}' />
+    </window>
+    <window class='worksheet' name='Gender &amp; Age (2)'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='title' />
+          </strip>
+        </edge>
+        <edge name='right'>
+          <strip size='160'>
+            <card pane-specification-id='0' param='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_463307827520397315:qk]' type='color' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <current-page>
+          <multibucket>
+            <bucket>&quot;Male&quot;</bucket>
+          </multibucket>
+        </current-page>
+      </viewpoint>
+      <simple-id uuid='{428F557A-A50D-4E41-B110-970043FD56CD}' />
     </window>
     <window class='worksheet' name='Average Time Demographics'>
       <cards>
@@ -3555,9 +4084,33 @@
             </multibucket>
           </current-page>
         </viewpoint>
+        <viewpoint name='Gender &amp; Age (2)'>
+          <current-page>
+            <multibucket>
+              <bucket>&quot;Male&quot;</bucket>
+            </multibucket>
+          </current-page>
+        </viewpoint>
       </viewpoints>
       <active id='-1' />
       <simple-id uuid='{A24480A0-D3B5-4CF1-81ED-38201C79668F}' />
+    </window>
+    <window class='dashboard' maximized='true' name='Time by Demographics'>
+      <viewpoints>
+        <viewpoint name='Sheet 12'>
+          <current-page>
+            <multibucket>
+              <bucket>2020</bucket>
+            </multibucket>
+          </current-page>
+          <zoom type='entire-view' />
+        </viewpoint>
+        <viewpoint name='Trips by Month (User Type &amp; Age)'>
+          <zoom type='entire-view' />
+        </viewpoint>
+      </viewpoints>
+      <active id='13' />
+      <simple-id uuid='{182633EE-B1BF-45EB-97BA-9CB2C3B8F43D}' />
     </window>
     <window class='worksheet' name='Trips by Month (User Type &amp; Age)'>
       <cards>
@@ -3581,8 +4134,6 @@
         </edge>
         <edge name='right'>
           <strip size='160'>
-            <card param='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' type='filter' />
-            <card param='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' type='filter' />
             <card pane-specification-id='1' param='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' type='color' />
             <card pane-specification-id='2' param='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' type='color' />
             <card pane-specification-id='2' param='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_463307827520397315:qk]' type='size' />
@@ -3591,7 +4142,7 @@
       </cards>
       <simple-id uuid='{D6488CC8-BCA1-4AD3-87CC-469AC1ECE7BD}' />
     </window>
-    <window class='worksheet' name='Trips by Weekday (User Type &amp; Age) (2)'>
+    <window class='worksheet' name='Sheet 12'>
       <cards>
         <edge name='left'>
           <strip size='160'>
@@ -3613,44 +4164,19 @@
         </edge>
         <edge name='right'>
           <strip size='160'>
-            <card param='[federated.01lounl0yor8it11i24eh18vb1m8].[Gender (group)]' type='filter' />
             <card param='[federated.01lounl0yor8it11i24eh18vb1m8].[yr:starttime:ok]' type='filter' />
-            <card pane-specification-id='1' param='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' type='color' />
-            <card pane-specification-id='2' param='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' type='color' />
-            <card pane-specification-id='2' param='[federated.01lounl0yor8it11i24eh18vb1m8].[cnt:Calculation_463307827520397315:qk]' type='size' />
+            <card pane-specification-id='2' param='[federated.01lounl0yor8it11i24eh18vb1m8].[io:Weekday:nk]' type='color' />
           </strip>
         </edge>
       </cards>
-      <simple-id uuid='{62CF38A5-8586-4F9A-82BA-2BFB542F4173}' />
-    </window>
-    <window class='worksheet' name='Trips by Hour (User Type &amp; Age)'>
-      <cards>
-        <edge name='left'>
-          <strip size='160'>
-            <card type='pages' />
-            <card type='filters' />
-            <card type='marks' />
-          </strip>
-        </edge>
-        <edge name='top'>
-          <strip size='2147483647'>
-            <card type='columns' />
-          </strip>
-          <strip size='2147483647'>
-            <card type='rows' />
-          </strip>
-          <strip size='2147483647'>
-            <card type='title' />
-          </strip>
-        </edge>
-        <edge name='right'>
-          <strip size='160'>
-            <card pane-specification-id='2' param='[federated.01lounl0yor8it11i24eh18vb1m8].[Age  (group)]' type='color' />
-            <card pane-specification-id='1' param='[federated.01lounl0yor8it11i24eh18vb1m8].[none:usertype:nk]' type='color' />
-          </strip>
-        </edge>
-      </cards>
-      <simple-id uuid='{D31DE691-3343-4C99-AE5D-1710F249C72E}' />
+      <viewpoint>
+        <current-page>
+          <multibucket>
+            <bucket>2020</bucket>
+          </multibucket>
+        </current-page>
+      </viewpoint>
+      <simple-id uuid='{B3CF6803-18D6-4B2B-911D-340DA06CF57C}' />
     </window>
     <window class='worksheet' name='Map Start Station 2018-2019'>
       <cards>
@@ -3681,11 +4207,17 @@
         </edge>
       </cards>
       <viewpoint>
+        <current-page>
+          <multibucket>
+            <bucket>#2020-01-01 00:00:00#</bucket>
+            <bucket>12</bucket>
+          </multibucket>
+        </current-page>
         <default-map-tool-selection tool='1' />
       </viewpoint>
       <simple-id uuid='{6DD40925-7562-4AAD-9648-A04384B33C6A}' />
     </window>
-    <window class='worksheet' maximized='true' name='Trips 2018-2019'>
+    <window class='worksheet' name='Trips 2018-2019'>
       <cards>
         <edge name='left'>
           <strip size='160'>
