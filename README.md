@@ -85,4 +85,21 @@ This is an interactive map that shows where the start and end stations are locat
 
 This dashboard shows the number of the 10 most and least popular start and end stations.   The user can use the dropdown menu at the top to filter by year.
 
+## Results
+
+**Age, Gender and User Type**
+* Male subscribers make up 70% of the trips.
+* Majority of the bikers for both gender are in the 30-39 age group.
+* Female customers have the highest averge trip duration, especially in the under 20 and the 20-29 age group.
+
+**Busiest Times** 
+* Summer is the peak season for people taking bike trips.
+* People usually commute during rush hours at 8AM and 6PM.
+* Riders prefer to ride during than the day than at night.
+
+**Covid-19 Impacts**
+* Number of trips and subcribers decreased drastically as the need to commute has declined with new social distance measures.
+* Whereas, customers increased as bikers may prefer to save money from annual subscriptions.
+* Average duration have increased as riders will make most out of their trip.
+* Popular stations have remained the same throughout 2018-2020 with less trips in 2020.
 
