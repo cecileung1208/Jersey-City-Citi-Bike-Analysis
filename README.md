@@ -40,4 +40,27 @@ Research needs to be done by obtaining monthly datasets from 2018 to 2020 from t
 [Jersey City Citibike Analysis - Tableau](https://github.com/cecileung1208/Jersey-City-Citi-Bike-Analysis/blob/master/Jersey%20City%20Citibike%20Analysis%202018-2020.twbx)
 
 ## Tableau Presentation Link
-[https://public.tableau.com/views/JerseyCityCitiBikeAnalysis2018-2020/JerseyCityCitibikeAnalysis?:language=en&:display_count=y&publish=yes&:origin=viz_share_link](https://public.tableau.com/views/JerseyCityCitiBikeAnalysis2018-2020/JerseyCityCitibikeAnalysis?:language=en&:display_count=y&publish=yes&:origin=viz_share_link)
+[Tableau Story](https://public.tableau.com/views/JerseyCityCitiBikeAnalysis2018-2020/JerseyCityCitibikeAnalysis?:language=en&:display_count=y&publish=yes&:origin=viz_share_link)
+
+## Data Visualizations
+
+### Demographic Trends
+
+* **Usertypes**
+
+![Image](https://github.com/cecileung1208/Jersey-City-Citi-Bike-Analysis/blob/master/Image/User%20Type%20Demographics.png)
+
+The User Type Dashboard provides trip, gender and age distribution for customers and subscribers.  The user can use the dropdown menu at the top to filter by year and usertypes.
+
+* **Age and Gender**
+
+![Image](https://github.com/cecileung1208/Jersey-City-Citi-Bike-Analysis/blob/master/Image/Age%20%26%20Gender%20Demographics.png)
+
+The Age and Gender Dashboard provides classify age groups, number of trips and average duration taken between user types and gender.  The user can use the dropdown menu at the top to filter by year, user types, gender, and age.
+
+* **Trips**
+
+![Image](https://github.com/cecileung1208/Jersey-City-Citi-Bike-Analysis/blob/master/Image/Trips%20Demographics%201.png)
+![Image](https://github.com/cecileung1208/Jersey-City-Citi-Bike-Analysis/blob/master/Image/Trips%20Demographics%202.png)
+
+The Trips Dashboard provides a breakdown of the trips taken for each month between usertypes and age groups and a breakdown of the trips taken during the week against the time of the day.  The user can use the dropdown menu at the top to filter by year and gender.
