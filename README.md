@@ -57,3 +57,10 @@ The User Type Dashboard provides trip, gender and age distribution for customers
 ![Image](https://github.com/cecileung1208/Jersey-City-Citi-Bike-Analysis/blob/master/Image/Age%20%26%20Gender%20Demographics.png)
 
 The Age and Gender Dashboard provides classify age groups, number of trips and average duration taken between user types and gender.  The user can use the dropdown menu at the top to filter by year, user types, gender, and age.
+
+* **Trips**
+
+![Image](https://github.com/cecileung1208/Jersey-City-Citi-Bike-Analysis/blob/master/Image/Trips%20Demographics%201.png)
+![Image](https://github.com/cecileung1208/Jersey-City-Citi-Bike-Analysis/blob/master/Image/Trips%20Demographics%202.png)
+
+The Trips Dashboard provides a breakdown of the trips taken for each month between usertypes and age groups and a breakdown of the trips taken during the week against the time of the day.  The user can use the dropdown menu at the top to filter by year and gender.
