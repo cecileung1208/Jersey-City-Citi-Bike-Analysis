@@ -40,4 +40,14 @@ Research needs to be done by obtaining monthly datasets from 2018 to 2020 from t
 [Jersey City Citibike Analysis - Tableau](https://github.com/cecileung1208/Jersey-City-Citi-Bike-Analysis/blob/master/Jersey%20City%20Citibike%20Analysis%202018-2020.twbx)
 
 ## Tableau Presentation Link
-[https://public.tableau.com/views/JerseyCityCitiBikeAnalysis2018-2020/JerseyCityCitibikeAnalysis?:language=en&:display_count=y&publish=yes&:origin=viz_share_link](https://public.tableau.com/views/JerseyCityCitiBikeAnalysis2018-2020/JerseyCityCitibikeAnalysis?:language=en&:display_count=y&publish=yes&:origin=viz_share_link)
+[Tableau Story](https://public.tableau.com/views/JerseyCityCitiBikeAnalysis2018-2020/JerseyCityCitibikeAnalysis?:language=en&:display_count=y&publish=yes&:origin=viz_share_link)
+
+## Data Visualizations
+
+### Demographic Trends
+
+* **User Types**
+
+![Image](https://github.com/cecileung1208/Jersey-City-Citi-Bike-Analysis/blob/master/Image/User%20Type%20Demographics.png)
+
+The User Type Dashboard provides trip, gender and age distribution for customers and subscribers.  The user can use the dropdown menu at the top to filter by year and user types.
