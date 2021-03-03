@@ -4,7 +4,7 @@
 
 ## Background
 
-The purpose of this project is to provide new business initiatives to improve the Jersey City Citi Bike program in 2021.  A presentation will be conducted to city officials by the end of March 2021.  
+The purpose of this project is to provide new business initiatives to improve the existing Jersey City Citi Bike program in 2021.  A presentation will be conducted to city officials by the end of March 2021.  
 
 Research needs to be done by obtaining monthly datasets from 2018 to 2020 from the Citi Bike System Data website.  Then, Python with Pandas (through Jupyter Notebooks) will be used to clean and merge the datasets.  The merged CSV dataset will be loaded on Tableau and a story along with dashboards will be created with interactive maps and visualizations for the final presentation.
 
