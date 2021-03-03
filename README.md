@@ -102,4 +102,3 @@ This dashboard shows the number of the 10 most and least popular start and end s
 * Whereas, customers increased as bikers may prefer to save money from annual subscriptions.
 * Average duration have increased as riders will make most out of their trip.
 * Popular stations have remained the same throughout 2018-2020 with less trips in 2020.
-
