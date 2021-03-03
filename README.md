@@ -72,3 +72,17 @@ The Trips Dashboard provides a breakdown of the trips taken for each month betwe
 ![Image](https://github.com/cecileung1208/Jersey-City-Citi-Bike-Analysis/blob/master/Image/Impacts%20of%20Covid-19.png)
 
 This dashboard provides the number of monthly trips, the user types and average trip duration by year.
+
+* **Maps**
+
+![Image](https://github.com/cecileung1208/Jersey-City-Citi-Bike-Analysis/blob/master/Image/Interactive%20Maps.png)
+
+This is an interactive map that shows where the start and end stations are located in Jersey City.   The bigger and darker circle means that more start and trips have been taken in these stations.  The user can view the pages of the slide show by clicking on the play or rewind button to see the changes of the number of trips per station by year month in chronological and reverse-chronological order respectively.  To move manually through the pages, click the forward and back buttons on either side of the drop-down list,  or use the slider.
+
+* **Most and Least Popular Stations**
+
+![Image](https://github.com/cecileung1208/Jersey-City-Citi-Bike-Analysis/blob/master/Image/Top%20%26%20Bottom%2010%20Stations.png)
+
+This dashboard shows the number of the 10 most and least popular start and end stations.   The user can use the dropdown menu at the top to filter by year.
+
+
