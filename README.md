@@ -11,11 +11,12 @@ Research has been done to  to obtain monthly datasets between 2018 to 2020 from 
 ## Defining the Scope
 
 1.  What are the age and gender demographics?
-2.  When are the peak times and seasons?
-3.  How many people subscribe to the program?
-4.  Have the number of trips and the average trip durations decreased as a result of the pandemic?
-5.  During 2020, have subscribers and customers decreased?
-6.  Are the popularity of the stations still the same throughout 2018 to 2020?
+2.  When is the peak and low season?
+3.  What time of the day and week is the busiest?
+4.  How many people subscribe to the program?
+5.  Have the number of trips and the average trip durations decreased as a result of the pandemic?
+6.  During 2020, have subscribers and customers decreased?
+7.  Are the popularity of the stations still the same throughout 2018 to 2020?
 
 ## Datasets
 
