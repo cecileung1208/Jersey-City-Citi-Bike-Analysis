@@ -6,7 +6,7 @@
 
 The purpose of this project is to provide new business initiatives to improve the existing Jersey City Citi Bike program in 2021.  A presentation will be conducted to city officials by the end of March 2021.  
 
-Research has been done to  to obtain monthly datasets between 2018 to 2020 from the [Citi Bike System Data website](https://s3.amazonaws.com/tripdata/index.html).  Then, Python with Pandas (through Jupyter Notebooks) will be used to clean and merge the datasets.  The merged CSV dataset will be loaded on Tableau and a story along with dashboards will be created with interactive maps and visualizations for the final presentation.
+Datasets of 995,500 trips between 2018 to 2020 are collected from the [Citi Bike System Data website](https://s3.amazonaws.com/tripdata/index.html).  Then, Python with Pandas (through Jupyter Notebooks) will be used to clean and merge the datasets.  The merged CSV dataset will be loaded on Tableau and a story along with dashboards will be created with interactive maps and visualizations for the final presentation.
 
 ## Defining the Scope
 
