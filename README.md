@@ -64,3 +64,11 @@ The Age and Gender Dashboard provides classify age groups, number of trips and a
 ![Image](https://github.com/cecileung1208/Jersey-City-Citi-Bike-Analysis/blob/master/Image/Trips%20Demographics%202.png)
 
 The Trips Dashboard provides a breakdown of the trips taken for each month between usertypes and age groups and a breakdown of the trips taken during the week against the time of the day.  The user can use the dropdown menu at the top to filter by year and gender.
+
+
+### Covid-19 Trends
+
+* **Impacts**
+![Image](https://github.com/cecileung1208/Jersey-City-Citi-Bike-Analysis/blob/master/Image/Impacts%20of%20Covid-19.png)
+
+This dashboard provides the number of monthly trips, the user types and average trip duration by year.
