@@ -46,8 +46,14 @@ Research needs to be done by obtaining monthly datasets from 2018 to 2020 from t
 
 ### Demographic Trends
 
-* **User Types**
+* **Usertypes**
 
 ![Image](https://github.com/cecileung1208/Jersey-City-Citi-Bike-Analysis/blob/master/Image/User%20Type%20Demographics.png)
 
-The User Type Dashboard provides trip, gender and age distribution for customers and subscribers.  The user can use the dropdown menu at the top to filter by year and user types.
+The User Type Dashboard provides trip, gender and age distribution for customers and subscribers.  The user can use the dropdown menu at the top to filter by year and usertypes.
+
+* **Age and Gender**
+
+![Image](https://github.com/cecileung1208/Jersey-City-Citi-Bike-Analysis/blob/master/Image/Age%20%26%20Gender%20Demographics.png)
+
+The Age and Gender Dashboard provides classify age groups, number of trips and average duration taken between user types and gender.  The user can use the dropdown menu at the top to filter by year, user types, gender, and age.
