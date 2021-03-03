@@ -1,7 +1,6 @@
 # Jersey-City-Citibank-Analysis
 
-![Image](https://inhabitat.com/citi-bike-to-expand-across-the-hudson-into-jersey-city/)
-
+![Image](https://www.libertytowersapts.com/wp-content/uploads/2015/09/xScreen-Shot-2015-09-10-at-5.48.43-PM.png.pagespeed.ic.jzZmdEQ2h6.webp)
 
 ## Background
 
