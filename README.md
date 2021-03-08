@@ -38,10 +38,10 @@ Datasets of 995,500 trips between 2018 to 2020 are collected from the [Citi Bike
 * On Tableau public, publish link to stakeholders.
 
 ## Scripts
-[Jersey City Citibike Analysis - Tableau](https://github.com/cecileung1208/Jersey-City-Citi-Bike-Analysis/blob/master/Jersey%20City%20Citibike%20Analysis%202018-2020.twbx)
+* [Jersey City Citibike Analysis - Tableau](https://github.com/cecileung1208/Jersey-City-Citi-Bike-Analysis/blob/master/Jersey%20City%20Citibike%20Analysis%202018-2020.twbx)
 
 ## Tableau Presentation Link
-[Tableau Story](https://public.tableau.com/views/JerseyCityCitiBikeAnalysis2018-2020/JerseyCityCitibikeAnalysis?:language=en&:display_count=y&publish=yes&:origin=viz_share_link) - https://public.tableau.com/profile/cecilia.leung#!/vizhome/JerseyCityCitiBikeAnalysis2018-2020/JerseyCityCitibikeAnalysis
+* [Tableau Story](https://public.tableau.com/views/JerseyCityCitiBikeAnalysis2018-2020/JerseyCityCitibikeAnalysis?:language=en&:display_count=y&publish=yes&:origin=viz_share_link) - https://public.tableau.com/profile/cecilia.leung#!/vizhome/JerseyCityCitiBikeAnalysis2018-2020/JerseyCityCitibikeAnalysis
 
 ## Data Visualizations
 
