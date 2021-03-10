@@ -78,7 +78,7 @@ This dashboard provides the number of monthly trips, the user types and average 
 
 ![Image](https://github.com/cecileung1208/Jersey-City-Citi-Bike-Analysis/blob/master/Image/Interactive%20Maps.png)
 
-This is an interactive map that shows where the start and end stations are located in Jersey City.   The bigger and darker circle means that more start and trips have been taken in these stations.  The user can view the pages of the slide show by clicking on the play or rewind button to see the changes of the number of trips per station by year month in chronological and reverse-chronological order respectively.  To move manually through the pages, click the forward and back buttons on either side of the drop-down list,  or use the slider.
+This is an interactive map that shows where the start and end stations are located in Jersey City.   The bigger and darker circle means that more start and end trips taken in these stations.  The user can view the pages of the slide show by clicking on the play or rewind button to see the changes of the number of trips per station by year month in chronological and reverse-chronological order respectively.  To move manually through the pages, click the forward and back buttons on either side of the drop-down list,  or use the slider.
 
 * **Most and Least Popular Stations**
 
