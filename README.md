@@ -20,7 +20,7 @@ Datasets of 995,500 trips between 2018 to 2020 are collected from the [Citi Bike
 
 ## Datasets
 
-[2018 -2020 Citi Bike System Data](https://s3.amazonaws.com/tripdata/index.html) - file names are JC-YYYYMM-citibike-tripdata.csv.zip
+[2018 -2020 Citi Bike System Data](https://s3.amazonaws.com/tripdata/index.html) - file names are JC-YYYYMM-citibike-tripdata.csv.zip<br>
 [Jupyter Notebook](https://github.com/cecileung1208/Jersey-City-Citi-Bike-Analysis/blob/master/Data/JC%20Citibike%20Merge.ipynb) - this is to merge the dataset
 
 ## Method
